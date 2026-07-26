@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura Bíblica del Día</title>
+    <!-- Fuente de Google para un aspecto limpio y moderno y FontAwesome para iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c6e9e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --muted-text: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        /* Cabecera */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Bloque de Resumen Vertical (Optimizado para móviles) */
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-label i {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .badge-theme {
+            background-color: #ebf5fb;
+            color: #2980b9;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+
+        /* Contenedor flexible para las etiquetas de versículos */
+        .references-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .reference-badge {
+            background-color: #fcf3cf;
+            color: #b7950b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #f9e79f;
+        }
+
+        /* Sección de Versículos */
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .verses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .verse-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .verse-reference {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .verse-moment {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .verse-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: #34495e;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--muted-text);
+        }
+
+/* Menú de Navegación Inferior Móvil */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+}
+.nav-link {
+    text-decoration: none;
+    color: var(--muted-text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    gap: 4px;
+}
+.nav-link i { font-size: 1.3rem; }
+.nav-link.active { color: var(--accent-color); font-weight: 700; }
+
+/* Muy importante: espacio abajo para que el menú no tape el contenido final */
+body { padding-bottom: 80px; }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <!--
+            <p>Después de leer los pasajes de la biblia, entra al grupo de Whatsapp y 
+            escribe sobre el mensaje que Dios te dió en su Palabra de hoy.</p>
+            -->
+            <h1>Lecturas de la lección</h1>
+        </header>
+
+        <!-- Resumen de Lectura estructurado Verticalmente descendente -->
+        <section class="summary-card">
+            <h2 class="summary-title">Resumen de Lectura</h2>
+            
+            <!-- 1. Fecha -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-calendar-alt"></i> Fecha</div>
+                <span class="badge-theme" id="current-date">13 de julio 2026</span>
+            </div>
+            
+            <!-- 2. Tema Principal -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-book-open"></i> Tema Principal</div>
+                <span class="badge-theme">Notas complementarias de la Eucaristía</span>
+            </div>
+            
+            <!-- 3. Versículos ········  -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i> Versículos</div>
+                <div class="references-inline">
+                    <span class="reference-badge">Jn 6 , 48-51</span>
+                    <span class="reference-badge">Jn 6 , 52 · 56 · 67-69 </span>
+                    <span class="reference-badge">Lc 22 , 19-20</span>
+                    <span class="reference-badge">Hch 2 , 42-46</span>
+                    <span class="reference-badge">1 Co 11 , 26-29</span>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- Detalle de la lectura -->
+        <h2 class="section-title">Pasajes detallados</h2>
+        
+        <main class="verses-list">
+            
+            <!-- Versículo 1 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Juan 6 , 48-51 
+                    <span class="verse-moment">Lectura 1</span>
+                </div>
+                <p class="verse-text">
+                    48	Yo soy el pan de Vida.	  
+49	Sus padres, en el desierto, comieron el maná y murieron.	  
+50	Pero este es el pan que desciende del cielo, para que aquel que lo coma no muera.	  
+51	Yo soy el pan vivo bajado del cielo. El que coma de este pan vivirá eternamente, y el pan que yo daré es mi carne para la Vida del mundo».
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 2 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                     Juan 6 , 52 · 56 · 67-69 
+                    <span class="verse-moment">Lectura 2</span>
+                </div>
+                <p class="verse-text">
+                    52	Los judíos discutían entre sí, diciendo: «¿Cómo este hombre puede darnos a comer su carne?».
+                    56	El que come mi carne y bebe mi sangre permanece en mí y yo en él.
+                    67	Jesús preguntó entonces a los Doce: «¿También ustedes quieren irse?».	  
+68	Simón Pedro le respondió: «Señor, ¿a quién iremos? Tú tienes palabras de Vida eterna.	  
+69	Nosotros hemos creído y sabemos que eres el Santo de Dios».
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 3 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Lucas 22 , 19-20
+                    <span class="verse-moment">Lectura 3</span>
+                </div>
+                <p class="verse-text">
+                    19	Después tomó pan y, dando gracias, lo partió y se lo dio diciendo: «Esto es mi cuerpo, que es entregado por ustedes. Hagan esto en memoria mía »(Jer 31,31 · Éx 24,8)<br>	  
+20	Hizo lo mismo con la copa después de cenar, diciendo: «Esta copa es la alianza nueva sellada con mi sangre, que es derramada por ustedes»).
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 4 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 2 , 42-46 
+                    <span class="verse-moment">Lectura 4</span>
+                </div>
+                <p class="verse-text">
+                    42	Todos se reunían asiduamente para escuchar la enseñanza de los Apóstoles y participar en la vida común, en la fracción del pan y en las oraciones.	  
+43	Un santo temor se apoderó de todos ellos, porque los Apóstoles realizaban muchos prodigios y signos.	  
+44	Todos los creyentes se mantenían unidos y ponían lo suyo en común:	  
+45	vendían sus propiedades y sus bienes, y distribuían el dinero entre ellos, según las necesidades de cada uno.	  
+46	Intimamente unidos, frecuentaban a diario el Templo, partían el pan en sus casas, y comían juntos con alegría y sencillez de corazón
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+            <!-- Versículo 5 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    1 Corintios 11 , 26-29 
+                    <span class="verse-moment">Lectura 5</span>
+                </div>
+                <p class="verse-text">
+                    26	Y así, siempre que coman este pan y beban esta copa, proclamarán la muerte del Señor hasta que él vuelva.	  
+27	Por eso, el que coma el pan o beba la copa del Señor indignamente tendrá que dar cuenta del Cuerpo y de la Sangre del Señor.	  
+28	Que cada uno se examine a sí mismo antes de comer este pan y beber esta copa;	  
+29	porque si come y bebe sin discernir el Cuerpo del Señor, come y bebe su propia condenación.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+        </main>
+
+        <footer>
+            <p>¡Deseamos que esta lectura sea de bendición para tu vida hoy!</p>
+            <p>Entra al grupo de Whatsapp y deja un mensaje con tus impresiones de lo que Dios te dice hoy.</p>
+        </footer>
+
+    </div>
+
+    
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito', reg))
+                    .catch(err => console.warn('Error al registrar el Service Worker', err));
+            });
+        }
+    </script>
+
+
+<!-- Menú de navegación inferior (apunta a la raíz desde carpeta fechas) -->
+<nav class="bottom-nav">
+    <a href="../index.html" class="nav-link">
+        <i class="fas fa-book-reader"></i>
+        <span>Home</span>
+    </a>
+    <a href="../temas.html" class="nav-link">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Tema Reciente</span>
+    </a>
+    <a href="../busqueda.html" class="nav-link active">
+        <i class="fas fa-search"></i>
+        <span>Búsqueda</span>
+    </a>
+</nav>
+
+</body>
+</html>

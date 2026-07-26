@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura Bíblica del Día</title>
+    <!-- Fuente de Google para un aspecto limpio y moderno y FontAwesome para iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c6e9e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --muted-text: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        /* Cabecera */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Bloque de Resumen Vertical (Optimizado para móviles) */
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-label i {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .badge-theme {
+            background-color: #ebf5fb;
+            color: #2980b9;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+
+        /* Contenedor flexible para las etiquetas de versículos */
+        .references-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .reference-badge {
+            background-color: #fcf3cf;
+            color: #b7950b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #f9e79f;
+        }
+
+        /* Sección de Versículos */
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .verses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .verse-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .verse-reference {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .verse-moment {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .verse-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: #34495e;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--muted-text);
+        }
+
+/* Menú de Navegación Inferior Móvil */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+}
+.nav-link {
+    text-decoration: none;
+    color: var(--muted-text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    gap: 4px;
+}
+.nav-link i { font-size: 1.3rem; }
+.nav-link.active { color: var(--accent-color); font-weight: 700; }
+
+/* Muy importante: espacio abajo para que el menú no tape el contenido final */
+body { padding-bottom: 80px; }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <!--
+            <p>Después de leer los pasajes de la biblia, entra al grupo de Whatsapp y 
+            escribe sobre el mensaje que Dios te dió en su Palabra de hoy.</p>
+            -->
+            <h1>Lecturas de la lección</h1>
+            
+        </header>
+
+        <!-- Resumen de Lectura estructurado Verticalmente descendente -->
+        <section class="summary-card">
+            <h2 class="summary-title">Resumen de Lectura</h2>
+            
+            <!-- 1. Fecha -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-calendar-alt"></i> Fecha</div>
+                <span class="badge-theme" id="current-date">15 de julio 2026</span>
+            </div>
+            
+            <!-- 2. Tema Principal -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-book-open"></i> Tema Principal</div>
+                <span class="badge-theme">Lección 11 "El pueblo de Dios"</span>
+            </div>
+            
+            <!-- 3. Versículos -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i> Versículos</div>
+                <div class="references-inline">
+                    <span class="reference-badge">Hch 1-14</span>
+                    <span class="reference-badge">Hch 2,1-11</span>
+                    <span class="reference-badge">Hch 2,12-21 · 36-41</span>
+                    <span class="reference-badge">Hch 10,34-46</span>
+                    <span class="reference-badge">Hch 2,42-47</span>
+                    <span class="reference-badge">Hch 9,1-16</span>
+                    <span class="reference-badge">Hch 27,1-44</span>
+                    <span class="reference-badge">Hch 28,1-31</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detalle de la lectura -->
+        <h2 class="section-title">Pasajes detallados</h2>
+        
+        <main class="verses-list">
+            
+            <!-- Versículo 1 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 1-14 
+                    <span class="verse-moment">Lectura 1</span>
+                </div>
+                <p class="verse-text">
+                    "Todos ellos, íntimamente unidos, se dedicaban a la oración, en compañía de algunas mujeres, de María, la madre de Jesús, y de sus hermanos."
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 2 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                     Hechos 2 , 1-11 
+                    <span class="verse-moment">Lectura 2</span>
+                </div>
+                <p class="verse-text">
+                    01	Al llegar el día de Pentecostés, estaban todos reunidos en el mismo lugar.	  
+02	De pronto, vino del cielo un ruido, semejante a una fuerte ráfaga de viento, que resonó en toda la casa donde se encontraban.	  
+03	Entonces vieron aparecer unas lenguas como de fuego, que descendieron por separado sobre cada uno de ellos.	  
+04	Todos quedaron llenos del Espíritu Santo, y comenzaron a hablar en distintas lenguas, según el Espíritu les permitía expresarse.	  
+05	Había en Jerusalén judíos piadosos, venidos de todas las naciones del mundo.	  
+06	Al oírse este ruido, se congregó la multitud y se llenó de asombro, porque cada uno los oía hablar en su propia lengua.	  
+07	Con gran admiración y estupor decían: «¿Acaso estos hombres que hablan no son todos galileos?	  
+08	¿Cómo es que cada uno de nosotros los oye en su propia lengua?	  
+09	Partos, medos y elamitas, los que habitamos en la Mesopotamia o en la misma Judea, en Capadocia, en el Ponto y en Asia Menor,	  
+10	en Frigia y Panfilia, en Egipto, en la Libia Cirenaica, los peregrinos de Roma,	  
+11	judíos y prosélitos, cretenses y árabes, todos los oímos proclamar en nuestras lenguas las maravillas de Dios».
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 3 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 2 , 12-21 · 36-41
+                    <span class="verse-moment">Lectura 3</span>
+                </div>
+                <p class="verse-text">
+                    12	Unos a otros se decían con asombro: «¿Qué significa esto?».	  
+13	Algunos, burlándose, comentaban: «Han tomado demasiado vino».	  
+14	Entonces, Pedro poniéndose de pie con los Once, levantó la voz y dijo: «Hombres de Judea y todos los que habitan en Jerusalén, presten atención, porque voy a explicarles lo que ha sucedido.	  
+15	Estos hombres no están ebrios, como ustedes suponen, ya que no son más que las nueve de la mañana,	  
+16	sino que se está cumpliendo lo que dijo el profeta Joel:	  
+17	"En los últimos días, dice el Señor, derramaré mi Espíritu sobre todos los hombres y profetizarán sus hijos y sus hijas; los jóvenes verán visiones y los ancianos tendrán sueños proféticos.	  
+18	Más aún, derramaré mi Espíritu sobre mis servidores y servidoras, y ellos profetizarán.	  
+19	Haré prodigios arriba, en el cielo, y signos abajo, en la tierra: verán sangre, fuego y columnas de humo.	  
+20	El sol se convertirá en tinieblas y la luna en sangre, antes que llegue el Día del Señor, día grande y glorioso.	  
+21	Y todo el que invoque el nombre del Señor se salvará".
+<br>
+------
+<br>
+36	Por eso, todo el pueblo de Israel debe reconocer que a ese Jesús que ustedes crucificaron, Dios lo ha hecho Señor y Mesías».	  
+37	Al oír estas cosas, todos se conmovieron profundamente, y dijeron a Pedro y a los otros Apóstoles: «Hermanos, ¿qué debemos hacer?».	  
+38	Pedro les respondió: «Conviértanse y háganse bautizar en el nombre de Jesucristo para que les sean perdonados los pecados, y así recibirán el don del Espíritu Santo.	  
+39	Porque la promesa ha sido hecha a ustedes y a sus hijos, y a todos aquellos que están lejos: a cuantos el Señor, nuestro Dios, quiera llamar».	  
+40	Y con muchos otros argumentos les daba testimonio y los exhortaba a que se pusieran a salvo de esta generación perversa.	  
+41	Los que recibieron su palabra se hicieron bautizar; y ese día se unieron a ellos alrededor de tres mil.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 4 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 10 , 34-46 
+                    <span class="verse-moment">Lectura 4</span>
+                </div>
+                <p class="verse-text">
+                    34	Entonces Pedro, tomando la palabra, dijo: «Verdaderamente, comprendo que Dios no hace acepción de personas,	  
+35	y que en cualquier nación, todo el que lo teme y practica la justicia es agradable a él.	  
+36	El envió su Palabra al pueblo de Israel, anunciándoles la Buena Noticia de la paz por medio de Jesucristo, que es el Señor de todos.	  
+37	Ustedes ya saben qué ha ocurrido en toda Judea, comenzando por Galilea, después del bautismo que predicaba Juan:	  
+38	cómo Dios ungió a Jesús de Nazaret con el Espíritu Santo, llenándolo de poder. El pasó haciendo el bien y curando a todos los que habían caído en poder del demonio, porque Dios estaba con él.	  
+39	Nosotros somos testigos de todo lo que hizo en el país de los judíos y en Jerusalén. Y ellos mataron, suspendiéndolo de un patíbulo.	  
+40	Pero Dios lo resucitó al tercer día y le concedió que se manifestara,	  
+41	no a todo el pueblo, sino a testigos elegidos de antemano por Dios: a nosotros, que comimos y bebimos con él, después de su resurrección.	  
+42	Y nos envió a predicar al pueblo, y atestiguar que él fue constituido por Dios Juez de vivos y muertos.	  
+43	Todos los profetas dan testimonio de él, declarando que los que creen en él reciben el perdón de los pecados, en virtud de su Nombre».	  
+44	Mientras Pedro estaba hablando, el Espíritu Santo descendió sobre todos los que escuchaban la Palabra.	  
+45	Los fieles de origen judío que habían venido con Pedro quedaron maravillados al ver que el Espíritu Santo era derramado también sobre los paganos.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+            <!-- Versículo 5 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 2 , 42-47 
+                    <span class="verse-moment">Lectura 5</span>
+                </div>
+                <p class="verse-text">
+                    42	Todos se reunían asiduamente para escuchar la enseñanza de los Apóstoles y participar en la vida común, en la fracción del pan y en las oraciones.	  
+43	Un santo temor se apoderó de todos ellos, porque los Apóstoles realizaban muchos prodigios y signos.	  
+44	Todos los creyentes se mantenían unidos y ponían lo suyo en común:	  
+45	vendían sus propiedades y sus bienes, y distribuían el dinero entre ellos, según las necesidades de cada uno.	  
+46	Intimamente unidos, frecuentaban a diario el Templo, partían el pan en sus casas, y comían juntos con alegría y sencillez de corazón;	  
+47	ellos alababan a Dios y eran queridos por todo el pueblo. Y cada día, el Señor acrecentaba la comunidad con aquellos que debían salvarse.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+            <!-- Versículo 6 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 9 , 1-16
+                    <span class="verse-moment">Lectura 6</span>
+                </div>
+                <p class="verse-text">
+                    01	Saulo, que todavía respiraba amenazas de muerte contra los discípulos del Señor, se presentó al Sumo Sacerdote	  
+02	y le pidió cartas para las sinagogas de Damasco, a fin de traer encadenados a Jerusalén a los seguidores del Camino del Señor que encontrara, hombres o mujeres.	  
+03	Y mientras iba caminando, al acercarse a Damasco, una luz que venía del cielo lo envolvió de improviso con su resplandor.	  
+04	Y cayendo en tierra, oyó una voz que le decía: «Saulo, Saulo, ¿por qué me persigues?».	  
+05	El preguntó: «¿Quién eres tú Señor?». «Yo soy Jesús, a quien tú persigues, le respondió la voz.	  
+06	Ahora levántate, y entra en la ciudad: allí te dirán qué debes hacer».	  
+07	Los que lo acompañaban quedaron sin palabra, porque oían la voz, pero no veían a nadie.	  
+08	Saulo se levantó del suelo y, aunque tenía los ojos abiertos, no veía nada. Lo tomaron de la mano y lo llevaron a Damasco.	  
+09	Allí estuvo tres días sin ver, y sin comer ni beber.	  
+10	Vivía entonces en Damasco un discípulo llamado Ananías, a quien el Señor dijo en una visión: «¡Ananías!». El respondió: «Aquí estoy, Señor».	  
+11	El Señor le dijo: «Ve a la calle llamada Recta, y busca en casa de Judas a un tal Saulo de Tarso.	  
+12	El está orando y ha visto en una visión a un hombre llamado Ananías, que entraba y le imponía las manos para devolverle la vista».	  
+13	El está orando y ha visto en una visión a un hombre llamado Ananías, que entraba y le imponía las manos para devolverle la vista».	  
+14	Y ahora está aquí con plenos poderes de los jefes de los sacerdotes para llevar presos a todos los que invocan tu Nombre».	  
+15	El Señor le respondió: «Ve a buscarlo, porque es un instrumento elegido por mí para llevar mi Nombre a todas las naciones, a los reyes y al pueblo de Israel.	  
+16	Yo le haré ver cuánto tendrá que padecer por mi Nombre».
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 7 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 27 , 1-44 
+                    <span class="verse-moment">Lectura 7</span>
+                </div>
+                <p class="verse-text">
+                    01	Cuando se decidió que debíamos embarcarnos para Italia, confiaron a Pablo y a otros prisioneros a un centurión de la cohorte imperial, llamado Julio.	  
+02	Subimos a bordo de un barco de Adramicio que se dirigía a las costas de Asia, y zarpamos. Iba con nosotros Aristarco, un macedonio de Tesalónica.	  
+03	Al día siguiente, llegamos a Sidón. Julio trató a Pablo con mucha consideración y le permitió ir a ver a sus amigos y ser atendido por ellos.	  
+04	De allí, partimos y navegamos al resguardo de la isla de Chipre, porque soplaban vientos contrarios;	  
+05	después, atravesando el mar de Cilicia y de Panfilia, llegamos a Mira de Licia.	  
+06	Allí, el centurión encontró un barco alejandrino que iba a zarpar rumbo a Italia, y nos hizo embarcar en él.	  
+07	Durante varios días, navegamos lentamente y, a duras penas, llegamos a la altura de Cnido. Como el viento era desfavorable, navegamos al resguardo de la isla de Creta hacia el cabo Salmoné,	  
+08	y después de haberlo bordeado con gran dificultad, llegamos a un punto llamado Buenos Puertos, cerca de la ciudad de Lasea.	  
+09	Ya había transcurrido bastante tiempo y la navegación se hacía peligrosa, porque había pasado la época del Ayuno solemne. Entonces Pablo les advirtió:	  
+10	«Amigos, veo que la navegación no podrá continuar sin riesgo y sin graves pérdidas, no sólo para la carga y el barco, sino también para nuestras propias vidas».	  
+11	Pero el centurión confiaba más en el capital y en el patrón del barbo que en las palabras de Pablo;	  
+12	y como el puerto no se prestaba para invernar, la mayoría opinó que era mejor partir y llegar cuanto antes a Fenice, un puerto de Creta que mira hacia el suroeste y el noroeste, para pasar allí el invierno.	  
+13	En ese preciso momento, se levantó una brisa del sur y creyeron que podrían realizar este proyecto. Zarparon y comenzaron a bordear la isla de Creta.	  
+14	Pero muy pronto se desencadenó un huracán llamado Euraquilón, que provenía de la isla.	  
+15	Como el barco no podía resistir al viento, fue arrastrado y nos dejamos llevar a la deriva.	  
+16	Navegando a cubierto de una pequeña isla, llamada Cauda, a duras penas conseguimos recoger el bote salvavidas.	  
+17	Después de subirlo, se utilizaron los cables de refuerzo para asegurar el casco de la nave. Luego, por temor de encallar en los bancos de Sirtes, se bajó el ancla, dejándola suelta, y así navegamos a la deriva.	  
+18	Al día siguiente, como la tormenta todavía arreciaba, los marineros comenzaron a arrojar el cargamento.	  
+19	Al tercer día, echaron al agua con sus propias manos los aparejos del barco.	  
+20	Desde hacía varios días no se veía ni el sol ni las estrellas, y la tormenta seguía con la misma violencia, de modo que ya habíamos perdido toda esperanza de salvación.	  
+21	Como ya hacía tiempo que no comíamos, Pablo, de pie en medio de todos, les dijo: «Amigos, debían haberme hecho caso: si no hubiéramos partido de Creta, nos hubiéramos ahorrado este riesgo y estas graves pérdidas.	  
+22	De todas maneras, les ruego que tengan valor porque ninguno de ustedes perecerá; solamente se perderá el barco.	  
+23	Esta noche, se me apareció un ángel del Dios al que yo pertenezco y al que sirvo,	  
+24	me dijo: «No temas, Pablo. Tú debes comparecer ante el Emperador y Dios te concede la vida de todos los que navegan contigo».	  
+25	Por eso, amigos, tengan valor. Yo confío que Dios cumplirá lo que me ha dicho.	  
+26	Pero tendremos que encalahkan contra una isla».	  
+27	En la decimocuarta noche, todavía íbamos a la deriva por el Adriático, cuando hacia la medianoche, los marineros presintieron la cercanía de tierra firme.	  
+28	Echaron la sonda al mar y comprobaron que había una profundidad de alrededor de unos treinta y seis metros. Un poco más adelante, la echaron de nuevo y vieron que había unos verantos y siete metros.	  
+29	Temiendo que fuéramos a chocar contra unos escollos, soltaron cuatro anclas por la popa, esperando ansiosamente que amaneciera.	  
+30	Los marineros intentaron escaparse del barco, arrojando al mar el bote salvavidas, con el pretexto de soltar las anclas de proa.	  
+31	Pero Pablo dijo al centurión y a los soldados: «Si esos marineros no permanecen a bordo, ustedes no podrán salvarse».	  
+32	Entonces los soldados cortaron las amarras del bote y lo dejaron caer.	  
+33	Mientras esperábamos que amaneciera, Pablo recomendó a todos que comieran algo, diciéndoles: «Hace catorce días que están a la expectativa, sin comer nada.	  
+34	Les aconsejo que coman algo, porque están exponiendo su salud. Nadie perderá un solo cabello de su cabeza».	  
+35	Después que dijo esto, tomó pan, dio gracias a Dios delante de todos, lo partió y se puso a comer.	  
+36	Los demás se animaron y también comenzaron a comer.	  
+37	Eramos en total doscientas setenta y seis personas a bordo.	  
+38	Una vez satisfechos, comenzaron a aligerar el barco tirando el trigo al mar.	  
+39	Cuando amaneció, los marineros no reconocieron la costa; sólo distinguían una bahía con una playa, e hicieron lo posible para llevar la nave en esa dirección.	  
+40	Desataron las anclas y las dejaron caer al mar; al mismo tiempo, aflojaron las amarras de los timones. Después desplegaron al viento la vela artimón y enfilaron hacia la playa.	  
+41	Pero chocaron contra un banco de arena y quedó inmóvil, mientras que la popa se deshacía por la violencia de las olas.	  
+42	Entonces los soldados decidieron matar a los prisioneros, por temor de que alguno se escapara a nado.	  
+43	Pero, el centurión, que quería salvar a Pablo, impidió que lo hicieran, y ordenó que primero se tiraran al mar los que sabían nadar para llegar a tierra.	  
+44	Los demás, lo harían valiéndose de tablas o de los restos del navío. Así todos llegaron a tierra sanos y salvos.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 8 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 28 , 1-31
+                    <span class="verse-moment">Lectura 8</span>
+                </div>
+                <p class="verse-text">
+                    01	Cuando estuvimos a salvo, nos enteramos de que la misma se llamaba Malta.	  
+02	Sus habitantes nos demostraron una cordialidad nada común y nos recibieron a todos alrededor de un gran fuego que habían encendido a causa de la lluvia y del frío.	  
+03	Pablo recogió unas ramas secas y las echó al fuego. El calor hizo salir una serpiente que se enroscó en su mano.	  
+04	Cuando los habitantes del lugar vieron el reptil enroscado en su mano, comenzaron a decir entre sí: «Este hombre es seguramente un asesino: se ha salvado del mar, y ahora la justicia divina no le permite sobrevivir».	  
+05	Pero él tiró la serpiente al fuego y no sufrió ningún mal.	  
+06	Ellos esperaban que se hinchara o cayera muerto. Después de un largo rato, viendo que no le pasaba nada, cambiaron de opinión y decían: «Es un dios».	  
+07	Había en los alrededores una propiedad perteneciente al principal de la isla, llamado Publio. Este nos recibió y nos brindó cordial hospitalidad durante tres días.	  
+08	El padre de Publio estaba en cama con fiebre y disentería. Pablo fue a verlo, oró, le impuso las manos y lo curó.	  
+09	A raíz de esto, se presentaron los otros enfermos de la isla y fueron curados.	  
+10	Nos colmaron luego de toda clase de atenciones y cuando nos embarcamos, nos proveyeron de lo necesario.	  
+11	Al cabo de tres meses nos embarcamos en un navío que había permanecido en la isla durante el invierno; era un barco alejandrino que tenía la insignia de Cástor y Pólux.	  
+12	Hicimos escala en Siracusa, donde permanecimos tres días.	  
+13	De allí, bordeando la costa llegamos a Regio. Al día siguiente, se levantó un viento del sur, y en dos días llegamos a Pozzuoli,	  
+14	donde encontramos a unos hermanos que nos invitaron a permanecer una semana con ellos. Luego llegamos a Roma.	  
+15	Los hermanos de esta ciudad, informamos de nuestra llegada, nos salieron al encuentro y nos alcanzaron a la altura del «Foro de Apio» y en las «Tres Tabernas». Pablo, al verlos, dio gracias a Dios y se sintió reconfortado.	  
+16	Cuando llegamos a Roma, recibió autorización para alojarse en una casa particular con un soldado que lo custodiara.	  
+17	Tres días después convocó a los judíos principales, y cuando se reunieron les dijo: «Hermanos, sin haber hecho nada contra el pueblo ni contra las costumbres de nuestros padres, fui arrestado en Jerusalén y puesto en manos de los romanos.	  
+18	Después de interrogarme, quisieron dejarme en libertad, porque no encontraban en mí nada que mereciera la muerte;	  
+19	pero ante la oposición de los judíos, me vi obligado a apelar al Emperador, sin querer por esto acusar en nada a mi pueblo.	  
+20	Por eso he querido verlos y hablarles, ya que a causa de la esperanza de Israel llevo estas cadenas».	  
+21	Ellos le respondieron: «Nosotros no hemos recibido de Judea ninguna carta referente a ti, y ninguno de los hermanos que vinieron nos han contado nada que te sea desfavorable.	  
+22	Pero ahora quisiéramos oírte exponer lo que piensas, porque sabemos que esta secta encuentra oposición en todas partes».	  
+23	Entonces fijaron un día para encontrarse con él, y fueron a verlo en mayor número al lugar donde se alojaba. Pablo les habló durante todo el día sobre el Reino de Dios, dándoles toda clase de testimonio y tratando de persuadirlos para que creyeran en Jesucristo, a partir de la Ley de Moisés y de los Profetas.	  
+24	Unos se convencían con sus palabras, pero otros se resistían a creer,	  
+25	y mientras ellos se retiraban sin haberse puesto de acuerdo, Pablo dijo esta sola frase: «Son muy ciertas las palabras que el Espíritu Santo dijo a los padres de ustedes, por medio del profeta Isaías:	  
+26	"Ve a decir a este pueblo: Por más que oigan no comprenderán, por más que vean, no conocerán,	  
+27	Porque el corazón de este pueblo se ha endurecido, se taparon los oídos y cerraron los ojos, por temor de que sus ojos vean, que sus oídos oigan, que su corazón comprenda, que se conviertan, y que yo los cure".	  
+28	Sepan entonces que esa salvación de Dios va a ser anunciada a los paganos. Ellos sí que la escucharán».	  
+29	[Al oír estas palabras los judíos se retiraron discutiendo acaloradamente.]	  
+30	Pablo vivió dos años enteros por sus propios medios, recibiendo a todos los que querían verlo,	  
+31	proclamando el Reino de Dios, y enseñando con toda libertad y sin encontrar ningún obstáculo, lo concerniente al Señor Jesucristo.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+        </main>
+
+        <footer>
+            <p>¡Deseamos que esta lectura sea de bendición para tu vida hoy!</p>
+            <p>Entra al grupo de Whatsapp y deja un mensaje con tus impresiones de lo que Dios te dice hoy.</p>
+        </footer>
+
+    </div>
+
+    
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito', reg))
+                    .catch(err => console.warn('Error al registrar el Service Worker', err));
+            });
+        }
+    </script>
+
+
+<!-- Menú de navegación inferior (apunta a la raíz desde carpeta fechas) -->
+<nav class="bottom-nav">
+    <a href="../index.html" class="nav-link">
+        <i class="fas fa-book-reader"></i>
+        <span>Home</span>
+    </a>
+    <a href="../temas.html" class="nav-link">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Tema Reciente</span>
+    </a>
+    <a href="../busqueda.html" class="nav-link active">
+        <i class="fas fa-search"></i>
+        <span>Búsqueda</span>
+    </a>
+</nav>
+
+
+</body>
+</html>

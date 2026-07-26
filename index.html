@@ -1,0 +1,398 @@
+<!-- index.html - Página principal -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Inicio | Parroquia Santisima Trinidad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c6e9e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f7ff;
+            color: #1a2c3e;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, .logo, .curso-titulo {
+            font-family: 'Playfair Display', serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        /* Header con estilo azul claro */
+        .header {
+            background-color: #eef4fc;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #cde0f0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .logo h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #2c6e9e;
+            letter-spacing: -0.3px;
+        }
+        .logo p {
+            font-size: 0.8rem;
+            color: #4a7c9c;
+            font-weight: 500;
+        }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #2c5a7a;
+            transition: 0.2s;
+            font-size: 1rem;
+            padding: 6px 0;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #1e88e5;
+            border-bottom: 2px solid #5dade2;
+        }
+        /* Hero section con imagen hero.jpg desde raiz */
+        .hero {
+            /* Se cambió 'center/cover' por 'center 40%/cover' para subir el enfoque un 10% */
+            background: linear-gradient(rgba(0, 0, 0, 0.00), rgba(0, 0, 0, 0.6)), url('hero.jpg') center 40%/cover no-repeat;
+            min-height: 90vh; /* Se mantiene expandido verticalmente al 90% */
+            display: flex;
+            align-items: center;
+            color: white;
+            border-radius: 0 0 32px 32px;
+            margin-bottom: 16px;
+        }
+        
+        .hero-content {
+            max-width: 700px;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(2px);
+            padding: 2rem 2rem;
+            border-radius: 28px;
+            margin: 40px 0;
+        }
+        .hero h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+        .hero-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+            margin-top: 24px;
+            background: #1a2c3eb3;
+            padding: 16px 20px;
+            border-radius: 48px;
+            justify-content: space-between;
+        }
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .detail-item i {
+            font-size: 1.4rem;
+            color: #7abde0;
+        }
+        .section {
+            padding: 70px 0;
+            border-bottom: 1px solid #d4e4f0;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #2c6e9e;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #7abde0;
+            border-radius: 4px;
+        }
+        .info-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .card-info {
+            background: white;
+            border-radius: 28px;
+            padding: 24px 22px;
+            flex: 1;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: 0.2s;
+            border: 1px solid #d4eaf5;
+        }
+        .card-info i {
+            font-size: 2.2rem;
+            color: #3a89c9;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        .card-info h3 {
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+            color: #2c6e9e;
+        }
+        .card-info p {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .horario-misa {
+            font-weight: 600;
+            background: #e3f0fa;
+            padding: 6px 12px;
+            border-radius: 40px;
+            display: inline-block;
+            margin: 4px 4px 0 0;
+            color: #1e6eb0;
+        }
+
+        /* Estilos de la sección del Mapa */
+        .map-section {
+            margin-top: 32px;
+            margin-bottom: 20px;
+        }
+        .map-container {
+            background: white;
+            border-radius: 28px;
+            padding: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d4eaf5;
+        }
+        .map-container h3 {
+            font-size: 1.6rem;
+            color: #2c6e9e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .map-container h3 i {
+            font-size: 1.8rem;
+            color: #3a89c9;
+        }
+        .map-wrapper {
+            position: relative;
+            padding-bottom: 450px; /* Altura del mapa */
+            height: 0;
+            overflow: hidden;
+            border-radius: 18px;
+            border: 1px solid #d4eaf5;
+        }
+        @media (max-width: 760px) {
+            .map-wrapper {
+                padding-bottom: 300px; /* Altura más baja en móviles para mejor usabilidad */
+            }
+        }
+        .map-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Boton flotante WhatsApp */
+        .btn-whatsapp {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background-color: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+            transition: 0.2s;
+            z-index: 99;
+            text-decoration: none;
+            border: none;
+        }
+        .btn-whatsapp:hover {
+            background-color: #128C7E;
+            transform: scale(1.05);
+        }
+        footer {
+            background: #e3eff9;
+            padding: 28px 0;
+            text-align: center;
+            color: #2c5a7a;
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+        @media (max-width: 760px) {
+            .hero h2 { font-size: 2rem; }
+            .hero { min-height: 60vh; }
+            .hero-content { padding: 1.2rem; margin: 20px 0; }
+            .hero-details { flex-direction: column; gap: 12px; border-radius: 28px; }
+            .section-title { font-size: 1.8rem; }
+            .btn-whatsapp { width: 52px; height: 52px; font-size: 1.8rem; bottom: 20px; right: 20px; }
+            .info-cards { flex-direction: column; }
+        }
+        /* Ajuste adicional para pantallas muy grandes */
+        @media (min-width: 1600px) {
+            .hero { min-height: 70vh; }
+            .container { max-width: 1400px; }
+        }
+        .titulo{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="container header-content">
+        <div class="logo">
+            <h1>Parroquia Santísima Trinidad</h1>
+            <p>Colonia Girasoles, Celaya, Gto.</p>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Inicio</a>
+            <a href="temas.html">Curso Bíblico</a>
+            <a href="busqueda.html">Buscar</a>
+        </div>
+    </div>
+</header>
+<main>
+    <!-- Seccion Hero principal con imagen local hero.jpg -->
+    <section id="inicio">
+        <div class="hero"></div>  
+
+        <!-- titulo despues del hero y antes de la info -->
+        <div class="container">
+            <div class="info-cards">
+                <div class="card-info">
+                    <h3 class="titulo">Bienvenidos a la página de la Parroquia Santísima Trinidad</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informacion de la iglesia: horarios, etc -->
+        <div class="container">
+            <div class="info-cards">
+                <!-- Horarios de misa -->
+                <div class="card-info">
+                    <i class="fas fa-bell"></i>
+                    <h3>Horarios</h3>
+                    <p><span class="horario-misa"><i class="fas fa-calendar-alt"></i> Misa:<br> Lunes a sábado 8:00 hrs.<br>
+                    Domingos 8:00 , 13:00 y 18:00 hrs.</span></p>
+                    <!-- <p><span class="horario-misa"><i class="fas fa-calendar-alt"></i> Misa: Domingo: 8:00 , 13:00 y 18:00 hrs</span></p> -->
+                    <p><span class="horario-misa"><i class="fas fa-calendar-week"></i> Jueves: Hora Santa 19:00 hrs </span></p> 
+                    <p><i class="fas fa-cross"></i> Confesiones: Durante la Hora Santa.</p>
+                    <p><span class="horario-misa"><i class="fas fa-calendar-week"></i> Estudio bíblico: lunes, miércoles y viernes 17:00-18:00 hrs </span></p>
+                    <p><span class="horario-misa"><i class="fas fa-calendar-week"></i> Curso Gran Misión: Lunes 18:00-19:00 hrs </span></p>
+                </div>
+                
+                <!-- Horario de notaría -->
+                <div class="card-info">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h3>Horario de notaría</h3>
+                    <p>Oficina parroquial: Lunes a Viernes 9:30 a 12:30 y 16:30 a 19:00.</p>
+                    <p>📞 461 999 9999</p>
+                    <p>✉️ parroquia@correo.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de ubicación en Google Maps -->
+        <div class="container map-section">
+            <div class="map-container">
+                <h3><i class="fas fa-location-dot"></i> Cómo llegar (Ubicación)</h3>
+                <p style="margin-bottom: 15px; color: #4a7c9c; font-weight: 500;">
+                    Calle Gregorio Guelatti esq. De la Trinidad, Celaya, Gto.
+                </p>
+                <div class="map-wrapper">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d555.447089375863!2d-100.84135198518823!3d20.523120079957863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842cbafc5ed7bd0f%3A0xa96ffda5c4d4d1e4!2sParroquia%20de%20La%20Sant%C3%ADsima%20Trinidad!5e0!3m2!1ses!2smx!4v1784165753942!5m2!1ses!2smx" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Bloque de Invitación a Compartir -->
+<div style="text-align: center; margin: 30px auto; padding: 0 15px;">
+    <p style="color: var(--muted-text); font-size: 0.9rem; margin-bottom: 12px;">¿Te ha sido de bendición esta página?</p>
+    <a href="share/share.html" style="display: inline-flex; align-items: center; gap: 10px; background-color: #27ae60; color: white; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: 600; font-size: 1rem; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2); transition: transform 0.2s;">
+        <i class="fas fa-share-alt"></i> Compártela con un Amigo
+    </a>
+</div>
+
+
+<footer>
+    <div class="container">
+        <p>© 2026 Parroquia Santísima Trinidad · Col. Girasoles · Celaya, Gto.</p>
+        <p><i class="fas fa-heart" style="color:#3a89c9;"></i> "Donde dos o más se reúnan en mi nombre, allí estoy yo" (Mateo 18,20)</p>
+    </div>
+</footer>
+<!-- Boton flotante de WhatsApp con numero solicitado -->
+<a href="https://wa.me/524611177957?text=Hola%2C%20necesito%20informes%20sobre%20los%20cursos%20de%20Biblia." class="btn-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registrado con éxito', reg))
+                .catch(err => console.warn('Error al registrar el Service Worker', err));
+        });
+    }
+</script>
+
+
+
+</body>
+</html>

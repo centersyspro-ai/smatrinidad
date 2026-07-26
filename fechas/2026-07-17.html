@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura Bíblica del Día</title>
+    <!-- Fuente de Google para un aspecto limpio y moderno y FontAwesome para iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c6e9e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --muted-text: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        /* Cabecera */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Bloque de Resumen Vertical (Optimizado para móviles) */
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-label i {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .badge-theme {
+            background-color: #ebf5fb;
+            color: #2980b9;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+
+        /* Contenedor flexible para las etiquetas de versículos */
+        .references-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .reference-badge {
+            background-color: #fcf3cf;
+            color: #b7950b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #f9e79f;
+        }
+
+        /* Sección de Versículos */
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .verses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .verse-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .verse-reference {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .verse-moment {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .verse-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: #34495e;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--muted-text);
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Botón para regresar al index principal -->
+            <a href="../busqueda.html" class="btn-navigation-top">
+                <i class="fas fa-home"></i> Ir Atrás
+            </a>
+        <header>
+             <!--
+            <p>Después de leer los pasajes de la biblia, entra al grupo de Whatsapp y 
+            escribe sobre el mensaje que Dios te dió en su Palabra de hoy.</p>
+            -->
+
+            <h1>Lecturas de la lección</h1>
+        </header>
+
+        <!-- Resumen de Lectura estructurado Verticalmente descendente -->
+        <section class="summary-card">
+            <h2 class="summary-title">Resumen de Lectura</h2>
+            
+            <!-- 1. Fecha -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-calendar-alt"></i> Fecha</div>
+                <span class="badge-theme" id="current-date">17 de julio 2026</span>
+            </div>
+            
+            <!-- 2. Tema Principal -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-book-open"></i>Tema Principal</div>
+                <span class="badge-theme">Notas complementarias de la lección anterior</span>
+            </div>
+            
+            <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i> Versículos</div>
+                <div class="references-inline">
+                    <span class="reference-badge">Jn 17,21</span>
+                    <span class="reference-badge">Mt 16,18-19</span>
+                    <span class="reference-badge">Mt 16,13-17</span>
+                    <span class="reference-badge">Jn 21,15-17</span>
+                    <span class="reference-badge">Lc 22,31-32</span>
+                    <span class="reference-badge">Ef 4,5-6</span>
+                    <span class="reference-badge">1 Co 12,12-13</span>
+                    <span class="reference-badge">Rom 12,5</span>
+                    <span class="reference-badge">Hch 9,32</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detalle de la lectura  -->
+        <h2 class="section-title">Pasajes detallados</h2>
+        
+        <main class="verses-list">
+            
+            <!-- Versículo 1 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Juan 17 , 21 
+                    <span class="verse-moment">Lectura 1</span>
+                </div>
+                <p class="verse-text">
+                    21	Que todos sean uno: como tú, Padre, estás en mí y yo en ti, que también ellos sean uno en nosotros, para que el mundo crea que tú me enviaste.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 2 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                     Mateo 16 , 18-19 
+                    <span class="verse-moment">Lectura 2</span>
+                </div>
+                <p class="verse-text">
+                    18	Y ahora yo te digo: Tú eres Pedro (o sea Piedra), y sobre esta piedra edificaré mi Iglesia; los poderes de la muerte jamás la podrán vencer.	  
+19	Yo te daré las llaves del Reino de los Cielos: lo que ates en la tierra quedará atado en el Cielo, y lo que desates en la tierra quedará desatado en el Cielo.»
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 3 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Mateo 16 , 13-17
+                    <span class="verse-moment">Lectura 3</span>
+                </div>
+                <p class="verse-text">
+                    13	Jesús se fue a la región de Cesarea de Filipo. Estando allí, preguntó a sus discípulos: «Según el parecer de la gente, ¿quién es este Hijo del Hombre?»	  
+14	Respondieron: «Unos dicen que eres Juan el Bautista, otros que eres Elías o Jeremías, o alguno de los profetas.»	  
+15	Jesús les preguntó: «Y ustedes, ¿quién dicen que soy yo?»	  
+16	Pedro contestó: «Tú eres el Mesías, el Hijo del Dios vivo.»	  
+17	Jesús le replicó: «Feliz eres, Simón Barjona, porque esto no te lo ha revelado la carne ni la sangre, sino mi Padre que está en los Cielos.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 4 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Juan 21 , 15-17 
+                    <span class="verse-moment">Lectura 4</span>
+                </div>
+                <p class="verse-text">
+                    15	Después de comer, Jesús dijo a Simón Pedro: «Simón, hijo de Juan, ¿me amas más que estos?». El le respondió: «Sí, Señor, tú sabes que te quiero». Jesús le dijo: «Apacienta mis corderos».	  
+16	Le volvió a decir por segunda vez: «Simón, hijo de Juan, ¿me amas?». El le respondió: «Sí, Señor, saber que te quiero». Jesús le dijo: «Apacienta mis ovejas».	  
+17	Le preguntó por tercera vez: «Simón, hijo de Juan, ¿me quieres?». Pedro se entristeció de que por tercera vez le preguntara si lo quería, y le dijo: «Señor, tú lo sabes todo; sabes que te quiero». Jesús le dijo: «Apacienta mis ovejas.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+            <!-- Versículo 5 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Lucas 22 , 31-32
+                    <span class="verse-moment">Lectura 5</span>
+                </div>
+                <p class="verse-text">
+                    31	Simón, Simón. Mira que Satanás ha pedido permiso para sacudirlos a ustedes como trigo que se limpia;	  
+32	pero yo he rogado por ti para que tu fe no se venga abajo. Y tú, cuando hayas vuelto, tendrás que fortalecer a tus hermanos.»
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+            <!-- Versículo 6 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Efesios  4 , 5-6
+                    <span class="verse-moment">Lectura 6</span>
+                </div>
+                <p class="verse-text">
+                    05	Hay un solo Señor, una sola fe, un solo bautismo.	  
+06	Hay un solo Dios y Padre de todos, que está sobre todos, lo penetra todo y está en todos.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 7 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    1 Corintios 12 , 12-13
+                    <span class="verse-moment">Lectura 7</span>
+                </div>
+                <p class="verse-text">
+                    12	Así como el cuerpo tiene muchos miembros, y sin embargo, es uno, y estos miembros, a pesar de ser muchos, no forman sino un solo cuerpo, así también sucede con Cristo.	  
+13	Porque todos hemos sido bautizados en un solo Espíritu para formar un solo Cuerpo ?judíos y griegos, esclavos y hombres libres? y todos hemos bebido de un mismo Espíritu.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 8 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Romanos 12 , 5
+                    <span class="verse-moment">Lectura 8</span>
+                </div>
+                <p class="verse-text">
+                    05	también todos nosotros formamos un solo Cuerpo en Cristo, y en lo que respecta a cada uno, somos miembros los unos de los otros.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+             
+
+            <!-- Versículo 9 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 9 , 32
+                    <span class="verse-moment">Lectura 9</span>
+                </div>
+                <p class="verse-text">
+                    32	Pedro, en una gira por todas las ciudades, visitó también a los santos que vivían en Lida.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+
+        </main>
+
+        <footer>
+            <p>¡Deseamos que esta lectura sea de bendición para tu vida hoy!</p>
+            <p>Entra al grupo de Whatsapp y deja un mensaje con tus impresiones de lo que Dios te dice hoy.</p>
+        </footer>
+
+    </div>
+
+    
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito', reg))
+                    .catch(err => console.warn('Error al registrar el Service Worker', err));
+            });
+        }
+         
+    </script>
+    <!-- Botón para regresar al index principal -->
+            <a href="../busqueda.html" class="btn-navigation-top">
+                <i class="fas fa-home"></i> Ir Atrás
+            </a>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura Bíblica del Día</title>
+    <!-- Fuente de Google para un aspecto limpio y moderno y FontAwesome para iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c6e9e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --muted-text: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        /* Cabecera */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Bloque de Resumen Vertical (Optimizado para móviles) */
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-label i {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .badge-theme {
+            background-color: #ebf5fb;
+            color: #2980b9;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+
+        /* Contenedor flexible para las etiquetas de versículos */
+        .references-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .reference-badge {
+            background-color: #fcf3cf;
+            color: #b7950b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #f9e79f;
+        }
+
+        /* Sección de Versículos */
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .verses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .verse-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .verse-reference {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .verse-moment {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .verse-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: #34495e;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--muted-text);
+        }
+
+/* Menú de Navegación Inferior Móvil */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+}
+.nav-link {
+    text-decoration: none;
+    color: var(--muted-text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    gap: 4px;
+}
+.nav-link i { font-size: 1.3rem; }
+.nav-link.active { color: var(--accent-color); font-weight: 700; }
+
+/* Muy importante: espacio abajo para que el menú no tape el contenido final */
+body { padding-bottom: 80px; }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <!--
+            <p>Después de leer los pasajes de la biblia, entra al grupo de Whatsapp y 
+            escribe sobre el mensaje que Dios te dió en su Palabra de hoy.</p>
+            -->
+            <h1>Lecturas de la lección</h1>
+        </header>
+
+        <!-- Resumen de Lectura estructurado Verticalmente descendente -->
+        <section class="summary-card">
+            <h2 class="summary-title">Resumen de Lectura</h2>
+            
+            <!-- 1. Fecha -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-calendar-alt"></i> Fecha</div>
+                <span class="badge-theme" id="current-date">Miércoles 8 de julio 2026</span>
+            </div>
+            
+            <!-- 2. Tema Principal -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-book-open"></i> Tema Principal</div>
+                <span class="badge-theme"> "Jesús nos amó hasta el extremo"</span>
+            </div>
+            
+            <!-- 3. Versículos ········  -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i> Versículos</div>
+                <div class="references-inline">
+                    <span class="reference-badge">Mt 21 , 2-13</span>
+                    <span class="reference-badge">Lc 22 , 7-20</span>
+                    <span class="reference-badge">Mt 26 , 17-28</span>
+                    <span class="reference-badge">Jn 18 , 1-12</span>
+                    <span class="reference-badge">Lc 22 , 54-71</span>
+                                        
+                </div>
+            </div>
+        </section>
+
+        <!-- Detalle de la lectura -->
+        <h2 class="section-title">Pasajes detallados</h2>
+        
+        <main class="verses-list">
+            
+            <!-- Versículo 1 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Mateo 21 , 2-13
+                    <span class="verse-moment">Lectura 1</span>
+                </div>
+                <p class="verse-text">
+                    02	Jesús envió a dos discípulos con esta misión: «Vayan al pueblecito que está al frente, y allí encontrarán una burra atada con su burrito al lado. Desátenla y tráiganmela.	  
+03	Si alguien les dice algo, contéstenle: El Señor los necesita, y los devolverá cuanto antes.»	  
+04	Esto sucedió para que se cumpliera lo dicho por el profeta:	  
+05	Digan a la hija de Sión: «Mira que tu rey viene a ti con toda sencillez, montado en una burra, un animal de carga.»	  
+06	Los discípulos se fueron e hicieron como Jesús les había mandado.	  
+07	Le trajeron la burra con su cría, le colocaron sus mantos sobre el lomo y él se sentó encima.	  
+08	Había muchísima gente; extendían sus mantos en el camino, o bien cortaban ramas de árboles, con las que cubrían el suelo.	  
+10	Cuando Jesús entró en Jerusalén, toda la ciudad se alborotó y preguntaban: «¿Quién es éste?»	  
+11	Y la muchedumbre respondía: «¡Este es el profeta Jesús, de Nazaret de Galilea!» Jesús expulsa a los vendedores	  
+12	Jesús entró en el Templo y echó fuera a todos los que vendían y compraban en el Templo. Derribó las mesas de los que cambiaban monedas y los puestos de los vendedores de palomas. Les dijo:	  
+13	Está escrito: Mi casa será llamada Casa de Oración. Pero ustedes la han convertido en una cueva de ladrones.»
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 2 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                     Lucas 22 , 7-20
+                    <span class="verse-moment">Lectura 2</span>
+                </div>
+                <p class="verse-text">
+                    07	Llegó el día de la fiesta de los Panes sin Levadura, en que se debía sacrificar el cordero de Pascua.	  
+08	Entonces Jesús, envió a Pedro y a Juan diciéndoles: «Vayan a preparar lo necesario para que celebremos la Cena de Pascua.»	  
+09	Le preguntaron: «¿Dónde quieres que la preparemos?»	  
+10	Jesús les contestó: «Cuan do entren en la ciudad, les sal drá al encuentro un hombre que lleva un jarro de agua.	  
+11	Síganlo hasta la casa donde entre, y digan al dueño de la casa: ?El Maestro manda a decirte: ¿Dónde está la pieza en la que comeré la Pascua con mis discípulos??	  
+12	El les mostrará una sala grande y amueblada en el piso superior. Preparen allí lo necesario.»	  
+13	Se fueron, pues, hallaron todo tal como Jesús les había dicho y prepararon la Pascua.	  
+14	Llegada la hora, Jesús se puso a la mesa con los apóstoles	  
+15	y les dijo: «Yo tenía gran deseo de comer esta Pascua con ustedes antes de padecer.	  
+16	Porque les digo que ya no la volveré a comer hasta que sea la nueva y perfecta Pascua en el Reino de Dios.»	  
+17	Jesús, aceptando una copa, dio gracias y les dijo: «Tomen esto y repártanlo entre ustedes,	  
+18	porque les aseguro que ya no volveré a beber del fruto de la vid hasta que llegue el Reino de Dios.	  
+19	Después tomó pan y, dando gracias, lo partió y se lo dio diciendo: «Esto es mi cuerpo, que es entregado por ustedes. Hagan esto en memoria mía.» (Jer 31,31 Éx 24,8)<br>	  
+20	Hizo lo mismo con la copa después de cenar, diciendo: «Esta copa es la alianza nueva sellada con mi sangre, que es derramada por ustedes»).
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 3 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Mateo 26 , 17-28
+                    <span class="verse-moment">Lectura 3</span>
+                </div>
+                <p class="verse-text">
+                    17	El primer día de la Fiesta en que se comía el pan sin levadura, los discípulos se acercaron a Jesús y le dijeron: «¿Dónde quieres que preparemos la comida de la Pascua?»	  
+18	Jesús contestó: «Vayan a la ciudad, a casa de tal hombre, y díganle: El Maestro te manda decir: Mi hora se acerca y quiero celebrar la Pascua con mis discípulos en tu casa.»	  
+19	Los discípulos hicieron tal como Jesús les había ordenado y prepararon la Pascua.	  
+20	Llegada la tarde, Jesús se puso a la mesa con los Doce.	  
+21	Y mientras comían, les dijo: «En verdad les digo: uno de ustedes me va a traicionar.»	  
+22	Se sintieron profundamente afligidos, y uno a uno comenzaron a preguntarle: «¿Seré yo, Señor?»	  
+23	El contestó: «El que me va a entregar es uno de los que mojan su pan conmigo en el plato.	  
+24	El Hijo del Hombre se va, como dicen las Escrituras, pero ¡pobre de aquel que entrega al Hijo del Hombre! ¡Sería mejor para él no haber nacido!»	  
+25	Judas, el que lo iba a entregar, le preguntó también: «¿Seré yo acaso, Maestro?» Jesús respondió: «Tú lo has dicho.»	  
+26	Mientras comían, Jesús tomó pan, pronunció la bendición, lo partió y lo dio a sus discípulos, diciendo: «Tomen y coman; esto es mi cuerpo.»	  
+27	Después tomó una copa, dio gracias y se la pasó diciendo: «Beban todos de ella:	  
+28	esto es mi sangre, la sangre de la Alianza, que es derramada por muchos, para el perdón de sus pecados.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 4 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Juan 18 , 1-12
+                    <span class="verse-moment">Lectura 4</span>
+                </div>
+                <p class="verse-text">
+                    01	Después de haber dicho esto, Jesús fue con sus discípulos al otro lado del torrente Cedrón. Había en ese lugar una huerta y allí entró con ellos.	  
+02	Judas, el traidor, también conocía el lugar porque Jesús y sus discípulos se reunían allí con frecuencia.	  
+03	Entonces Judas, al frente de un destacamento de soldados y de los guardias designados por los sumos sacerdotes y los fariseos, llegó allí con faroles, antorchas y armas.	  
+04	Jesús, sabiendo todo lo que le iba a suceder, se adelantó y les preguntó: «¿A quién buscan?».	  
+05	A Jesús, el Nazareno. El les dijo: «Soy yo». Judas el que lo entregaba estaba con ellos.	  
+06	Cuando Jesús les dijo: «Soy yo», ellos retrocedieron y cayeron en tierra.	  
+07	Les preguntó nuevamente: «¿A quién buscan?». Le dijeron: «A Jesús, el Nazareno».	  
+08	Jesús repitió: «Ya les dije que soy yo. Si es a mí a quien buscan, dejan que estos se vayan».	  
+09	Así debía cumplirse la palabra que él había dicho: «No he perdido a ninguno de los que me confiaste».	  
+10	Entonces Simón Pedro, que llevaba una espada, la sacó e hirió al servidor del Sumo Sacerdote, cortándole la oreja derecha. El servidor se llamaba Malco.	  
+11	Jesús dijo a Simón Pedro: «Envaina tu espada. ¿Acaso no beberé el cáliz que me ha dado el Padre?	  
+12	El destacamento de soldados, con el tribuno y los guardias judíos, se apoderaron de Jesús y lo ataron.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+            <!-- Versículo 5 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Lucas 22 , 54-71
+                    <span class="verse-moment">Lectura 5</span>
+                </div>
+                <p class="verse-text">
+                    54	Entonces lo apresaron y lo llevaron a la casa del sumo sacerdote, donde entraron. Pedro los seguía a distancia.	  
+55	Prendieron un fuego en medio del patio y luego se sentaron alrededor; Pedro también se acercó y se sentó entre ellos.	  
+56	Al verlo sentado a la lumbre, una muchachita de la casa, después de mirarlo, dijo: «Este también estaba con él»	  
+57	Pero él lo negó diciendo: «Mujer, yo no lo conozco.»	  
+59	Como una hora más tarde, otro afirmaba: «Seguramente éste estaba con él, pues además es galileo.»	  
+60	De nuevo Pedro lo negó diciendo: «Amigo, no sé de qué hablas.» Todavía estaba hablando cuando un gallo cantó.	  
+61	El Señor se volvió y fijó la mirada en Pedro. Y Pedro se acordó de la palabra del Señor, que le había dicho: «Antes de que cante hoy el gallo, me habrás negado tres veces.»	  
+62	Y, saliendo afuera, lloró amargamente.	  
+63	Los hombres que custodiaban a Jesús empezaron a burlarse de él y a darle golpes.	  
+64	Le cubrieron la cara, y después le preguntaban: «Adivina quién te pegó.»	  
+65	Y proferían toda clase de insultos contra él.	  
+66	Cuando amaneció, se reunieron los jefes de los judíos, los jefes de los sacerdotes y los maestros de la Ley, y mandaron traer a Jesús ante su Consejo.	  
+67	Le interrogaron: «¿Eres tú el Cristo? Respóndenos». Jesús respondió: «Si se lo digo, ustedes no me creerán,	  
+68	y si les hago alguna pregunta, ustedes no me contestarán	  
+69	Desde ahora, sin embargo, el Hijo del Hombre estará sentado a la derecha del Dios Poderoso.»	  
+70	Todos dijeron: «Entonces, ¿tú eres el Hijo de Dios?» Jesús contestó: «Dicen bien, yo lo soy.»	  
+71	Ellos dijeron: «¿Para qué buscar otro testimonio? Nosotros mismos lo hemos oído de su boca.»
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+ 
+
+
+            
+
+
+
+        </main>
+
+        <footer>
+            <p>¡Deseamos que esta lectura sea de bendición para tu vida hoy!</p>
+            <p>Entra al grupo de Whatsapp y deja un mensaje con tus impresiones de lo que Dios te dice hoy.</p>
+        </footer>
+
+    </div>
+
+    
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito', reg))
+                    .catch(err => console.warn('Error al registrar el Service Worker', err));
+            });
+        }
+    </script>
+
+
+<!-- Menú de navegación inferior (apunta a la raíz desde carpeta fechas) -->
+<nav class="bottom-nav">
+    <a href="../index.html" class="nav-link">
+        <i class="fas fa-book-reader"></i>
+        <span>Home</span>
+    </a>
+    <a href="../temas.html" class="nav-link">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Tema Reciente</span>
+    </a>
+    <a href="../busqueda.html" class="nav-link active">
+        <i class="fas fa-search"></i>
+        <span>Búsqueda</span>
+    </a>
+</nav>
+
+
+</body>
+</html>

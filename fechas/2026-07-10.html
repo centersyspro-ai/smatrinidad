@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura Bíblica del Día</title>
+    <!-- Fuente de Google para un aspecto limpio y moderno y FontAwesome para iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c6e9e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --muted-text: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        /* Cabecera */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Bloque de Resumen Vertical (Optimizado para móviles) */
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-label i {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .badge-theme {
+            background-color: #ebf5fb;
+            color: #2980b9;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+
+        /* Contenedor flexible para las etiquetas de versículos */
+        .references-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .reference-badge {
+            background-color: #fcf3cf;
+            color: #b7950b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #f9e79f;
+        }
+
+        /* Sección de Versículos */
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .verses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .verse-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .verse-reference {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .verse-moment {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .verse-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: #34495e;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--muted-text);
+        }
+
+/* Menú de Navegación Inferior Móvil */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+}
+.nav-link {
+    text-decoration: none;
+    color: var(--muted-text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    gap: 4px;
+}
+.nav-link i { font-size: 1.3rem; }
+.nav-link.active { color: var(--accent-color); font-weight: 700; }
+
+/* Muy importante: espacio abajo para que el menú no tape el contenido final */
+body { padding-bottom: 80px; }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <!--
+            <p>Después de leer los pasajes de la biblia, entra al grupo de Whatsapp y 
+            escribe sobre el mensaje que Dios te dió en su Palabra de hoy.</p>
+            -->
+            <h1>Lecturas de la lección</h1>
+        </header>
+
+        <!-- Resumen de Lectura estructurado Verticalmente descendente -->
+        <section class="summary-card">
+            <h2 class="summary-title">Resumen de Lectura</h2>
+            
+            <!-- 1. Fecha -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-calendar-alt"></i> Fecha</div>
+                <span class="badge-theme" id="current-date">Viernes 10 de julio 2026</span>
+            </div>
+            
+            <!-- 2. Tema Principal -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-book-open"></i> Tema Principal</div>
+                <span class="badge-theme">Notas complementarias - "Jesús nos amó hasta el extremo"</span>
+            </div>
+            
+            <!-- 3. Versículos ········  -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i> Versículos</div>
+                <div class="references-inline">
+                    <span class="reference-badge">Mt 27 , 11-26</span>
+                    <span class="reference-badge">Lc 23 , 32-43</span>
+                    <span class="reference-badge">Mt 27 , 50-55</span>
+                    <span class="reference-badge">Mt 27 , 57-66</span>
+                    <span class="reference-badge">Mt 28 , 1-10</span>
+                    <span class="reference-badge">Jn 20 , 19-29</span>
+                    <span class="reference-badge">Lc 24 , 44-53</span>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- Detalle de la lectura -->
+        <h2 class="section-title">Pasajes detallados</h2>
+        
+        <main class="verses-list">
+            
+            <!-- Versículo 1 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Mateo 27 , 11-26
+                    <span class="verse-moment">Lectura 1</span>
+                </div>
+                <p class="verse-text">
+                    11	Jesús compareció ante el gobernador, y éste comenzó a interrogarlo. Le preguntó: «¿Eres tú el rey de los judíos?» Jesús contestó: «Tú eres el que lo dice.»	  
+12	Los jefes de los sacerdotes y las autoridades judías lo acusaban, pero Jesús no contestó nada.	  
+13	Pilato le dijo: «¿No oyes todos los cargos que presentan contra ti?»	  
+14	Pero Jesús no dijo ni una palabra, de modo que el gobernador se sorprendió mucho.	  
+15	Con ocasión de la Pascua, el gobernador tenía la costumbre de dejar en libertad a un condenado, a elección de la gente.	  
+16	De hecho el pueblo tenía entonces un detenido famoso, llamado Barrabás.	  
+17	Cuando se juntó toda la gente, Pilato les dijo: «¿A quién quieren que deje libre, a Barrabás o a Jesús, llamado el Cristo?»	  
+18	Porque sabía que le habían entregado a Jesús por envidia.	  
+19	Mientras Pilato estaba en el tribunal, su mujer le mandó a decir: «No te metas con ese hombre porque es un santo, y anoche tuve un sueño horrible por causa de él.»	  
+20	Mientras tanto, los jefes de los sacerdotes y los jefes de los judíos persuadieron al gentío a que pidieran la libertad de Barrabás y la muerte de Jesús.	  
+21	Cuando el gobernador volvió a preguntarles: «¿A cuál de los dos quieren que les suelte?», ellos contestaron: «A Barrabás.»	  
+22	Pilato les dijo: «¿Y qué hago con Jesús, llamado el Cristo?» Todos contestaron: «¡Crucifícalo!»	  
+23	Pilato insistió: «¿Qué ha hecho de malo?» Pero ellos gritaban cada vez con más fuerza: «¡Que sea crucificado!»	  
+24	Al darse cuenta Pilato de que no conseguía nada, sino que más bien aumentaba el alboroto, pidió agua y se lavó las manos delante del pueblo. Y les dijo: «Ustedes responderán por su sangre, yo no tengo la culpa.»	  
+25	Y todo el pueblo con testó: «¡Que su sangre caiga sobre nosotros y sobre nuestros hijos!»	  
+26	Entonces Pilato les soltó a Barrabás. Mandó azotar a Jesús y lo en tregó a los que debían crucificarlo.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 2 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                     Lucas 23 , 32-43
+                    <span class="verse-moment">Lectura 2</span>
+                </div>
+                <p class="verse-text">
+                    32	Junto con Jesús llevaban también a dos malhechores para ejecutarlos.	  
+33	Al llegar al lugar llamado de la Calavera, lo crucificaron allí, y con él a los malhechores, uno a su derecha y el otro a su izquierda.	  
+34	Mientras tanto Jesús decía: «Padre, perdónalos, porque no saben lo que hacen.» Después los soldados se repartieron sus ropas echándolas a suerte.	  
+35	La gente estaba allí mirando; los jefes, por su parte, se burlaban diciendo: «Si salvó a otros, que se salve a sí mismo, ya que es el Me sías de Dios, el Elegido.»	  
+36	También los soldados se burlaban de él. Le ofrecieron vino agridulce	  
+37	diciendo: «Si tú eres el rey de los ju díos, sálvate a ti mismo.»	  
+38	Porque había sobre la cruz un letrero que decía: «Este es el rey de los judíos.»	  
+39	Uno de los malhechores que estaban crucificados con Jesús lo insultaba: «¿No eres tú el Mesías? ¡Sálvate a ti mismo y también a nosotros.»	  
+40	Pero el otro lo reprendió diciendo: «¿No temes a Dios tú, que estás en el mismo suplicio?	  
+41	Nosotros lo hemos merecido y pagamos por lo que hemos hecho,	  
+42	pero éste no ha hecho nada malo.» Y añadió: «Jesús, acuérdate de mí cuando entres en tu Reino.»	  
+43	Jesús le respondió: «En verdad te digo que hoy mismo estarás conmigo en el paraíso.»
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 3 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Mateo 27 , 50-55
+                    <span class="verse-moment">Lectura 3</span>
+                </div>
+                <p class="verse-text">
+                    50	Pero nuevamente Jesús dio un fuerte grito y entregó su espíritu.	  
+51	En ese mismo instante la cortina del Santuario se rasgó de arriba abajo, en dos partes.	  
+52	La tierra tembló, las rocas se partieron, los sepulcros se abrieron y resucitaron varias personas santas que habían llegado ya al descanso.	  
+53	Estas salieron de las sepulturas después de la resurrección de Jesús, fueron a la Ciudad Santa y se aparecieron a mucha gente.	  
+54	El capitán y los soldados que custodiaban a Jesús, al ver el temblor y todo lo que estaba pasando, se llenaron de terror y decían: «Verdaderamente este hombre era Hijo de Dios.»	  
+55	También estaban allí, observándolo todo, algunas mujeres que desde Galilea habían seguido a Jesús para servirlo.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 4 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Mateo 27 , 57-66
+                    <span class="verse-moment">Lectura 4</span>
+                </div>
+                <p class="verse-text">
+                    57	Siendo ya tarde, llegó un hombre rico de Arimatea, llamado José, que también se había hecho discípulo de Jesús.	  
+58	Se presentó a Pilato y le pidió el cuerpo de Jesús, y el gobernador ordenó que se lo entregaran.	  
+59	José tomó entonces el cuerpo de Jesús, lo envolvió en una sábana limpia	  
+60	y lo colocó en el sepulcro nuevo que se había hecho excavar en la roca. Después hizo rodar una gran piedra sobre la entrada del sepulcro y se fue.	  
+61	Mientras tanto, María Magdalena y la otra María estaban allí, sentadas frente al sepulcro.	  
+62	Al día siguiente (el día después de la Preparación de la Pascua), los jefes de los sacerdotes y los fariseos se presentaron a Pilato	  
+63	y le dijeron: «Señor, nos hemos acordado que ese mentiroso dijo cuando aún vivía: Después de tres días resucitaré.	  
+64	Ordena, pues, que sea asegurado el sepulcro hasta el tercer día, no sea que vayan sus discípulos, roben el cuerpo y digan al pueblo: Resucitó de entre los muertos. Este sería un engaño más perjudicial que el primero.»	  
+65	Pilato les respondió: «Ahí tienen una guardia. Vayan ustedes y tomen todas las precauciones que crean convenientes.»	  
+66	Ellos, pues, fueron al sepulcro y lo aseguraron. Sellaron la piedra que cerraba la entrada y pusieron guardia.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+            <!-- Versículo 5 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Mateo 28 , 1-10 
+                    <span class="verse-moment">Lectura 5</span>
+                </div>
+                <p class="verse-text">
+                    01	Pasado el sábado, al aclarar el primer día de la semana, fueron María Magdalena y la otra María a visitar el sepulcro.	  
+02	De repente se produjo un violento temblor: el Angel del Señor bajó del cielo, se dirigió al sepulcro, hizo rodar la piedra de la entrada y se sentó sobre ella.	  
+03	Su aspecto era como el relámpago y sus ropas blancas como la nieve.	  
+04	Al verlo, los guardias temblaron de espanto y quedaron como muertos.	  
+05	El Angel dijo a las mujeres: «Ustedes no tienen por qué temer. Yo sé que buscan a Jesús, que fue crucificado.	  
+06	No está aquí, pues ha resucitado, tal como lo había anunciado. Vengan a ver el lugar donde lo habían puesto,	  
+07	pero vuelvan en seguida y digan a sus discípulos: Ha resucitado de entre los muertos y ya se les adelanta camino a Galilea. Allí lo verán ustedes. Con esto ya se lo dije todo.»	  
+08	Ellas se fueron al instante del sepulcro, con temor, pero con una alegría inmensa a la vez, y corrieron a llevar la noticia a los discípulos.	  
+09	En eso Jesús les salió al encuentro en el camino y les dijo: «Paz a ustedes.» Las mujeres se acercaron, se abrazaron a sus pies y lo adoraron.	  
+10	Jesús les dijo: «No tengan miedo. Vayan ahora y digan a mis hermanos que se dirijan a Galilea. Allí me verán.»
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+ 
+
+
+            <!-- Versículo 6 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Juan 20 , 19-29 
+                    <span class="verse-moment">Lectura 6</span>
+                </div>
+                <p class="verse-text">
+                    19	Al atardecer de ese mismo día, el primero de la semana, estando cerradas las puertas del lugar donde se encontraban los discípulos, por temor a los judíos, llegó Jesús y poniéndose en medio de ellos, les dijo: «¡La paz esté con ustedes!».	  
+20	Mientras decía esto, les mostró sus manos y su costado. Los discípulos se llenaron de alegría cuando vieron al Señor.	  
+21	Jesús les dijo de nuevo: «¡La paz esté con ustedes! Como el Padre me envió a mí, yo también los envío a ustedes»	  
+22	Al decirles esto, sopló sobre ellos y añadió «Reciban al Espíritu Santo.	  
+23	Los pecados serán perdonados a los que ustedes se los perdonen, y serán retenidos a los que ustedes se los retengan».	  
+24	Tomás, uno de los Doce, de sobrenombre el Mellizo, no estaba con ellos cuando llegó Jesús.	  
+25	Los otros discípulos le dijeron: «¡Hemos visto al Señor!». El les respondió: «Si no veo la marca de los clavos en sus manos, si no pongo el dedo en el lugar de los clavos y la mano en su costado, no lo creeré».	  
+26	Ocho días más tarde, estaban de nuevo los discípulos reunidos en la casa, y estaba con ellos Tomás. Entonces apareció Jesús, estando cerradas las puertas, se puso en medio de ellos y les dijo: «¡La paz esté con ustedes!».	  
+27	Luego dijo a Tomás: «Trae aquí tu dedo: aquí están mis manos. Acerca tu mano: Métela en mi costado. En adelante no seas incrédulo, sino hombre de fe».	  
+28	Tomas respondió: «¡Señor mío y Dios mío!.	  
+29	Jesús le dijo: «Ahora crees, porque me has visto. ¡Felices los que creen sin haber visto!».
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+
+            <!-- Versículo 7 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Lucas 24 , 44-53
+                    <span class="verse-moment">Lectura 7</span>
+                </div>
+                <p class="verse-text">
+                    44	Jesús les dijo: «Todo esto se lo había dicho cuando estaba todavía con ustedes; tenía que cumplirse todo lo que está escrito en la Ley de Moisés, en los Profetas y en los Salmos referente a mí.»	  
+45	Entonces les abrió la mente para que entendieran las Escrituras.	  
+46	Les dijo: «Todo esto estaba escrito: los padecimientos del Mesías y su resurrección de entre los muertos al tercer día.	  
+47	Luego debe proclamarse en su nombre el arrepentimiento y el perdón de los pecados, comenzando por Jerusalén, y yendo después a todas las naciones, invitándolas a que se conviertan.	  
+48	Ustedes son testigos de todo esto.	  
+49	Ahora yo voy a enviar sobre ustedes lo que mi Padre prometió. Permanezcan, pues, en la ciudad hasta que sean revestidos de la fuerza que viene de arriba.»	  
+50	Jesús los llevó hasta cerca de Betania y, levantando las manos, los bendijo.	  
+51	Y mientras los bendecía, se separó de ellos y fue llevado al cielo.	  
+52	Ellos se postraron ante él. Después volvieron llenos de gozo a Jerusalén,	  
+53	y continuamente estaban en el Templo alabando a Dios.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+
+
+        </main>
+
+        <footer>
+            <p>¡Deseamos que esta lectura sea de bendición para tu vida hoy!</p>
+            <p>Entra al grupo de Whatsapp y deja un mensaje con tus impresiones de lo que Dios te dice hoy.</p>
+        </footer>
+
+    </div>
+
+    
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito', reg))
+                    .catch(err => console.warn('Error al registrar el Service Worker', err));
+            });
+        }
+    </script>
+
+
+<!-- Menú de navegación inferior (apunta a la raíz desde carpeta fechas) -->
+<nav class="bottom-nav">
+    <a href="../index.html" class="nav-link">
+        <i class="fas fa-book-reader"></i>
+        <span>Home</span>
+    </a>
+    <a href="../temas.html" class="nav-link">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Tema Reciente</span>
+    </a>
+    <a href="../busqueda.html" class="nav-link active">
+        <i class="fas fa-search"></i>
+        <span>Búsqueda</span>
+    </a>
+</nav>
+
+    
+</body>
+</html>

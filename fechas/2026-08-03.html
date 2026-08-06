@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura Bíblica del Día</title>
+    <!-- Fuente de Google para un aspecto limpio y moderno y FontAwesome para iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c6e9e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --muted-text: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        /* Cabecera */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Bloque de Resumen Vertical (Optimizado para móviles) */
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-label i {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .badge-theme {
+            background-color: #ebf5fb;
+            color: #2980b9;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+
+        /* Contenedor flexible para las etiquetas de versículos */
+        .references-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .reference-badge {
+            background-color: #fcf3cf;
+            color: #b7950b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #f9e79f;
+        }
+
+        /* Sección de Versículos */
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .verses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .verse-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .verse-reference {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .verse-moment {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .verse-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: #34495e;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--muted-text);
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Botón para regresar al index principal -->
+            <a href="../busqueda.html" class="btn-navigation-top">
+                <i class="fas fa-home"></i> Ir Atrás
+            </a>
+        <header>
+             <!--
+            <p>Después de leer los pasajes de la biblia, escribe en el grupo de Whatsapp
+                 sobre el mensaje que Dios te dió en su Palabra de hoy.</p>
+            -->
+
+            <h1>Lecturas de la  lección</h1>
+        </header>
+
+        <!-- Resumen de Lectura estructurado Verticalmente descendente -->
+        <section class="summary-card">
+            <h2 class="summary-title">Resumen de Lectura</h2>
+            
+            <!-- 1. Fecha -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-calendar-alt"></i> Fecha</div>
+                <span class="badge-theme" id="current-date">Lunes 3 de agosto 2026</span>
+            </div>
+            
+            <!-- 2. Tema Principal -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-book-open"></i>Segundo Curso - Tema de Hoy</div>
+                <span class="badge-theme">Lección 4 - Efusión del Espíritu Santo</span>
+            </div>
+            
+            <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i>Versículos</div>
+                <div class="references-inline">
+                    <span class="reference-badge">Hch 2,1-13</span> <!-- 1 -->
+                    <span class="reference-badge">Hch 2,44</span> <!-- 2 -->
+                    <span class="reference-badge">Hch 4,29</span> <!-- 3 -->
+                    <span class="reference-badge">Hch 19,1-6</span> <!-- 4 -->
+                    <span class="reference-badge">Hch 8,5-6</span> <!-- 5 -->
+                    <span class="reference-badge">Hch 10,44-46</span> <!-- 6 -->                    
+                    
+                                       
+                    
+                </div>
+                
+                <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i>Carismas</div>
+                <div class="references-inline">
+                                       
+                    <span class="reference-badge">El término carisma proviene del griego antiguo chárisma (χάρισμα), que se deriva de cháris (χάρις, que significa «gracia», «favor» o «don») y del sufijo -ma (que indica el resultado de una acción). <br>
+                        Significado en la religión, es un regalo que Dios da a una persona por medio del Espíritu Santo. <br>
+                        No se compra ni se gana con esfuerzo propio; es otorgado por Espíritu Santo. <br>
+                        Sirve para ayudar a los demás y hacer el bien a la comunidad, no solo para beneficio propio.</span> <!-- 7 -->
+                    <span class="reference-badge">1 Co 12,4-11</span> <!-- 8 -->
+                    <span class="reference-badge">1 Co 12,12-17</span> <!-- 9 -->
+                    
+                                       
+                    
+                </div>
+
+                  <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i>Frutos del Espíritu Santo.</div>
+                <div class="references-inline">
+                                      
+                    
+                   
+                    <span class="reference-badge">Ga 5,22-23</span> <!-- 11 -->
+                                       
+                    
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Detalle de la lectura  -->
+        <h2 class="section-title">Pasajes detallados</h2>
+        
+        <main class="verses-list">
+            
+            <!-- Versículo 1 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 1 , 1-13
+                    <span class="verse-moment">Lectura 1</span>
+                </div>
+                <p class="verse-text">
+                    01	Al llegar el día de Pentecostés, estaban todos reunidos en el mismo lugar.	  
+02	De pronto, vino del cielo un ruido, semejante a una fuerte ráfaga de viento, que resonó en toda la casa donde se encontraban.	  
+03	Entonces vieron aparecer unas lenguas como de fuego, que descendieron por separado sobre cada uno de ellos.	  
+04	Todos quedaron llenos del Espíritu Santo, y comenzaron a hablar en distintas lenguas, según el Espíritu les permitía expresarse.	  
+05	Había en Jerusalén judíos piadosos, venidos de todas las naciones del mundo.	  
+06	Al oírse este ruido, se congregó la multitud y se llenó de asombro, porque cada uno los oía hablar en su propia lengua.	  
+07	Con gran admiración y estupor decían: «¿Acaso estos hombres que hablan no son todos galileos?	  
+08	¿Cómo es que cada uno de nosotros los oye en su propia lengua?	  
+09	Partos, medos y elamitas, los que habitamos en la Mesopotamia o en la misma Judea, en Capadocia, en el Ponto y en Asia Menor,	  
+10	en Frigia y Panfilia, en Egipto, en la Libia Cirenaica, los peregrinos de Roma,	  
+11	judíos y prosélitos, cretenses y árabes, todos los oímos proclamar en nuestras lenguas las maravillas de Dios».	  
+12	Unos a otros se decían con asombro: «¿Qué significa esto?».	  
+13	Algunos, burlándose, comentaban: «Han tomado demasiado vino».
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 2 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                     Hechos 2 , 44
+                    <span class="verse-moment">Lectura 2</span>
+                </div>
+                <p class="verse-text">
+                    44	Todos los creyentes se mantenían unidos y ponían lo suyo en común
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 3 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 4 , 29-31
+                    <span class="verse-moment">Lectura 3</span>
+                </div>
+                <p class="verse-text">
+                    29	Ahora, Señor, mira sus amenazas, y permite a tus servidores anunciar tu Palabra con toda libertad:	  
+30	extiende tu mano para que se realicen curaciones, signos y prodigios en el nombre de tu santo servidor Jesús:.	  
+31	Cuando terminaron de orar, tembló el lugar donde estaban reunidos; todos quedaron llenos del Espíritu Santo y anunciaban decididamente la Palabra de Dios.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 4 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 19 , 1-6
+                    <span class="verse-moment">Lectura 4</span>
+                </div>
+                <p class="verse-text">
+                    01	Mientras Apolo permanecía en Corinto, Pablo atravesando la región interior, llegó a Efeso. Allí encontró a algunos discípulos	  
+02	y les preguntó: «Cuando ustedes abrazaron la fe, ¿recibieron el Espíritu Santo?». Ellos le dijeron: «Ni siquiera hemos oído decir que hay un Espíritu Santo».	  
+03	«Entonces, ¿qué bautismo recibieron?», les preguntó Pablo. «El de Juan», respondieron.	  
+04	Pablo les dijo: «Juan bautizaba con el bautismo de penitencia, diciendo al pueblo que creyera en el que vendría después de él, es decir, en Jesús».	  
+05	Al oír estas palabras, ellos se hicieron bautizar en el nombre del Señor Jesús.	  
+06	Pablo les impuso las manos, y descendió sobre ellos el Espíritu Santo. Entonces comenzaron a hablar en distintas lenguas y a profetizar.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+            <!-- Versículo 5 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 8 , 5-6 · 14-17
+                    <span class="verse-moment">Lectura 5</span>
+                </div>
+                <p class="verse-text">
+                    05	Felipe descendió a una ciudad de Samaría y allí predicaba a Cristo.	  
+06	Al oírlo y al ver los milagros que hacía, todos recibían unánimemente las palabras de Felipe.
+14	Cuando los Apóstoles que estaban en Jerusalén oyeron que los samaritanos habían recibido la Palabra de Dios, les enviaron a Pedro y a Juan.	  
+15	Estos, al llegar, oraron por ellos para que recibieran el Espíritu Santo.	  
+16	Porque todavía no había descendido sobre ninguno de ellos, sino que solamente estaban bautizados en el nombre del Señor Jesús.	  
+17	Entonces les impusieron las manos y recibieron el Espíritu Santo.
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong>
+                </div>
+            </article>
+
+            <!-- Versículo 6 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 10 , 44-46
+                    <span class="verse-moment">Lectura 6</span>
+                </div>
+                <p class="verse-text">
+                    44	Mientras Pedro estaba hablando, el Espíritu Santo descendió sobre todos los que escuchaban la Palabra.	  
+45	Los fieles de origen judío que habían venido con Pedro quedaron maravillados al ver que el Espíritu Santo era derramado también sobre los paganos.	  
+46	En efecto, los oían hablar diversas lenguas y proclamar la grandeza de Dios.
+
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+  
+            <!-- Versículo 7 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    1 Corintios 12 , 4-11
+                    <span class="verse-moment">Lectura 7</span>
+                </div>
+                <p class="verse-text">
+                    04	Ciertamente, hay diversidad de dones, pero todos proceden del mismo Espíritu.	  
+05	Hay diversidad de ministerios, pero un solo Señor.	  
+06	Hay diversidad de actividades, pero es el mismo Dios el que realiza todo en todos.	  
+07	En cada uno, el Espíritu se manifiesta para el bien común.	  
+08	El Espíritu da a uno la sabiduría para hablar; a otro, la ciencia para enseñar, según el mismo Espíritu;	  
+09	a otro, la fe, también el mismo Espíritu. A este se le da el don de curar, siempre en ese único Espíritu;	  
+10	a aquel, el don de hacer milagros; a uno, el don de profecía; a otro, el don de juzgar sobre el valor de los dones del Espíritu; a este, el don de lenguas; a aquel, el don de interpretarlas.	  
+11	Pero en todo esto, es el mismo y único Espíritu el que actúa, distribuyendo sus dones a cada uno en particular como él quiere.
+
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+ 
+            <!-- Versículo 8 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    1 Corintios 12 , 12-17
+                    <span class="verse-moment">Lectura 8</span>
+                </div>
+                <p class="verse-text">
+                    12	Así como el cuerpo tiene muchos miembros, y sin embargo, es uno, y estos miembros, a pesar de ser muchos, no forman sino un solo cuerpo, así también sucede con Cristo.	  
+13	Porque todos hemos sido bautizados en un solo Espíritu para formar un solo Cuerpo ?judíos y griegos, esclavos y hombres libres? y todos hemos bebido de un mismo Espíritu.	  
+14	El cuerpo no se compone de un solo miembro sino de muchos.	  
+15	Si el pie dijera: «Como no soy mano, no formo parte del cuerpo», ¿acaso por eso no seguiría siendo parte de él?	  
+16	Y si el oído dijera: «Ya que no soy ojo, no formo parte del cuerpo», ¿acaso dejaría de ser parte de él?	  
+17	Si todo el cuerpo fuera ojo, ¿dónde estaría el oído? Y si todo fuera oído, ¿dónde estaría el olfato?
+
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 9 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Gálatas 5 , 22-23  
+                    <span class="verse-moment">Lectura 9</span>
+                </div>
+                <p class="verse-text">
+                    22	Por el contrario, el fruto del Espíritu es: amor, alegría y paz, magnanimidad, afabilidad, bondad y confianza,	  
+23	mansedumbre y temperancia. Frente a estas cosas, la Ley está demás,
+
+                </p>
+                <div class="verse-note">
+                    <strong>Reflexión:</strong> 
+                </div>
+            </article>
+
+            
+
+
+        </main>
+
+        <footer>
+            <p>¡Deseamos que esta lectura sea de bendición para tu vida hoy!</p>
+            <p>Entra al grupo de Whatsapp y escribe sobre lo que Dios te dice hoy en su Palabra.</p>
+        </footer>
+
+    </div>
+
+    
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito', reg))
+                    .catch(err => console.warn('Error al registrar el Service Worker', err));
+            });
+        }
+         
+    </script>
+    <!-- Botón para regresar al index principal -->
+            <a href="../busqueda.html" class="btn-navigation-top">
+                <i class="fas fa-home"></i> Ir Atrás
+            </a>
+
+
+
+
+</body>
+</html>

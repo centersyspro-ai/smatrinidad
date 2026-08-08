@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura Bíblica del Día</title>
+    <!-- Fuente de Google para un aspecto limpio y moderno y FontAwesome para iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c6e9e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --muted-text: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        /* Cabecera */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Bloque de Resumen Vertical (Optimizado para móviles) */
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-label i {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .badge-theme {
+            background-color: #ebf5fb;
+            color: #2980b9;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+
+        /* Contenedor flexible para las etiquetas de versículos */
+        .references-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .reference-badge {
+            background-color: #fcf3cf;
+            color: #b7950b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #f9e79f;
+        }
+
+        /* Sección de Versículos */
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .verses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .verse-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .verse-reference {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .verse-moment {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .verse-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: #34495e;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--muted-text);
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Botón para regresar al index principal -->
+            <a href="../busqueda.html" class="btn-navigation-top">
+                <i class="fas fa-home"></i> Ir Atrás
+            </a>
+        <header>
+             <!--
+            <p>Después de leer los pasajes de la biblia, escribe en el grupo de Whatsapp
+                 sobre el mensaje que Dios te dió en su Palabra de hoy.</p>
+            -->
+
+            <h1>Lecturas de la  lección</h1>
+        </header>
+
+        <!-- Resumen de Lectura estructurado Verticalmente descendente -->
+        <section class="summary-card">
+            <h2 class="summary-title">Resumen de Lectura</h2>
+            
+            <!-- 1. Fecha -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-calendar-alt"></i> Fecha</div>
+                <span class="badge-theme" id="current-date">Miércoles 5 de agosto 2026</span>
+            </div>
+            
+            <!-- 2. Tema Principal -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-book-open"></i>Segundo Curso - Tema de Hoy</div>
+                <span class="badge-theme">Lección 5 - Necesidad del arrepentimiento</span>
+            </div>
+            
+            <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i>Los 10 mandamientos de la ley de Dios</div>
+                
+                
+                <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i>Mandamientos de la Iglesia</div>
+                
+                
+                <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i>Salmo 51 El salmo de arrepentimiento</div>
+
+
+                <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i>Confesión de Fé.</div>
+
+                <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i>Renuncia a Satanás</div>
+
+                <!-- 3. Versículos ····················· -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-bookmark"></i>Hechos Capítulo 2</div>
+
+
+
+            
+                  
+        </section>
+
+
+        
+
+        <!-- Detalle de la lectura  -->
+        <h2 class="section-title">*Contenido</h2>
+        
+        <main class="verses-list">
+            
+            <!-- Versículo 1 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Mandamientos de la ley de Dios
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                  
+                <div class="verse-note">
+                    <strong><a href="los-10-mandamientos.html">Ir a "Mandamientos de la ley de Dios"</a></strong>
+
+                </div>
+            </article>
+
+            <!-- Versículo 2 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                     Mandamientos de la Iglesia
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                    1.- Oír Misa entera todos los domingos y fiestas de guardar.<br>
+2.- Confesar los pecados mortales al menos una vez al año, en peligro de
+muerte, o si se ha de comulgar. <br>
+3.- Comulgar al menos por Pascua de Resurrección.<br>
+4.- Ayunar y abstenerse de comer carne cuando lo manda la Santa Madre
+Iglesia.<br>
+5.- Ayudar a la Iglesia en sus necesidades.
+                </p>
+                <div class="verse-note">
+                    <strong><a href="https://lapresentacion.es/los-cinco-mandamientos-de-la-santa-madre-iglesia/">Fuente: Parroquia de la presentación de Nuestra Señora</a></strong> 
+                </div>
+            </article>
+
+            <!-- Versículo 3 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Salmo 51
+                    <span class="verse-moment">Salmo de arrepentimiento</span>
+                </div>
+                <p class="verse-text">
+                    01	Del maestro de coro. Salmo de David.	  
+02	Cuando el profeta Natán lo visitó, después que aquel se había unido a Betsabé.	  
+03	¡Ten piedad de mí, oh Dios, por tu bondad, por tu gran compasión, borra mis faltas!	  
+04	¡Lávame totalmente de mi culpa y purifícame de mi pecado!	  
+05	Porque yo reconozco mis faltas y mi pecado está siempre ante mí.	  
+06	Contra ti, contra ti solo pequé e hice lo que es malo a tus ojos. Por eso, será justa tu sentencia y tu juicio será irreprochable;	  
+07	yo soy culpable desde que nací; pecador me concibió mi madre.	  
+08	Tú amas la sinceridad del corazón y me enseñas la sabiduría en mi interior.	  
+09	Purifícame con el hisopo y quedaré limpio; lávame, y quedaré más blanco que la nieve.	  
+10	Anúnciame el gozo y la alegría: que se alegren los huesos quebrantados.	  
+11	Aparta tu vista de mis pecados y borra todas mis culpas.	  
+13	No me arrojes lejos de tu presencia ni retires de mí tu santo espíritu.	  
+12	Crea en mí, Dios mío, un corazón puro, y renueva la firmeza de mi espíritu.	  
+14	Devuélveme la alegría de tu salvación, que tu espíritu generoso me sostenga:	  
+15	yo enseñaré tu camino a los impíos y los pecadores volverán a ti.	  
+16	¡Líbrame de la muerte, Dios, salvador mío, y mi lengua anunciará tu justicia!	  
+17	Abre mis labios, Señor, y mi boca proclamará tu alabanza.	  
+18	Los sacrificios no te satisfacen; si ofrezco un holocausto, no lo aceptas:	  
+19	mi sacrificio es un espíritu contrito, tú no desprecias el corazón contrito y humillado.	  
+20	Trata bien a Sión por tu bondad; reconstruye los muros de Jerusalén,	  
+21	Entonces aceptarás los sacrificios rituales, las oblaciones y los holocaustos y se ofrecerán novillos en tu altar.
+ 
+                </p>
+                <div class="verse-note">
+                    <strong><a href="http://www.biblia.catholic.net/">Fuente: catolic.net</a></strong>
+                </div>
+            </article>
+
+            <!-- Versículo 4 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Confesión de Fé. 
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                    ¿Creen en Dios Padre, creador de todo cuanto existe?<br>
+                    Sí creo.<br><br>
+                    ¿Creen en Jesús Hijo de Dios, Salvador y Senor?<br>
+                    Sí creo.<br><br>
+                    ¿Creen que se encarnó en el seno de María por obra del Espíritu Santo?<br>
+                    Sí creo.<br><br>
+                    ¿Creen que por su Pasión y su Cruz nos ha salvado?<br>
+                    Sí creo.<br><br>
+                    ¿Creen que su resurrección nos ha dado vida nueva?<br>
+                    Sí creo.<br><br>
+
+                    ¿Creen que está glorificado a la derecha del Padre?
+                    Sí creo.<br><br>
+
+                    ¿Creen que está vivo y es el Señor?<br>
+                    Sí creo.<br><br>
+
+                    ¿Creen en el Espíritu Santo?<br>
+                    Sí creo.<br><br>
+
+                    ¿Creen en la Iglesia Católica congregada y animada por el Espíritu Santo?<br>
+                    Sí creo.<br><br>
+
+                    ¿Creen en la comunión de los santos y en el perdón de los pecados?<br>
+                    Sí creo.<br><br>
+
+                    ¿Creen en la resurrección y la vida eterna?<br>
+                    Sí creo.<br><br>
+
+                    
+                </p>
+                
+            </article>
+
+            <!-- Versículo 5 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Renuncia a Satanás
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                    Al bautizarnos dejamos atrás la vida vieja del demonio con una renuncia directa al demonio.<br>
+                     Entonces hacemos un compromiso con Cristo y entramos en EL.<br>
+                     Si nos bautizaron de pequeños, nuestros padres y padrinos respondieron por nosotros PERO, como adultos debemos apropiarnos de esos compromisos diciendo en forma personal:<br><br>
+
+Renuncio a Satanás, esto es:<br>
+
+- al pecado, como negación de Dios;<br>
+- al mal, como signo del pecado en el mundo;<br>
+- al error, como ofuscación de la verdad;<br>
+- al egoísmo, como falta de testimonio del amor.<br><br>
+
+Renuncio a sus obras, que son:<br><br>
+
+- envidias y odios;<br>
+- perezas e indiferencias;<br>
+- cobardías y complejos;<br>
+- tristezas y desconfianzas;<br>
+- materialismos y sensualidades;<br>
+- injusticias y favoritismos;<br>
+- faltas de fe, de esperanza y de caridad.<br><br>
+
+Renuncio a todas sus seducciones, especialmente a:<br><br>
+
+- creerme el mejor;<br>
+- verme superior a los demás;<br>
+- estar muy seguro de mi mismo;<br>
+- creer que ya estoy convertido del todo;<br>
+- quedarme en las cosas, medios, instituciones, métodos, reglamentos, y no ir a Dios.<br><br>
+
+
+
+
+Renuncio a creerme superiores a los demás, esto es a cualquier tipo de:<br>
+
+- abuso;<br>
+- discriminación;<br>
+- fariseísmo, hipocresía, cinismo;<br>
+- orgullo;<br>
+- egoísmo personal;<br>
+- desprecio.<br><br>
+
+También renuncio a inhibirme ante las injusticias y necesidades de las personas e instituciones por:<br><br>
+
+- cobardía;<br>
+- pereza;<br>
+- comodidad;<br>
+- ventajas personales.<br><br>
+
+Finalmente renuncio a los criterios y comportamientos materialistas que consideran:<br><br>
+
+- el dinero como aspiración suprema de la vida;<br>
+- el placer ante todo;<br>
+- el negocio como valor absoluto;<br>
+- el propio bien por encima del bien común.<br>
+                </p>
+                <div class="verse-note">
+                    <strong><a href="https://www.evangelizacion.org.mx/articulos/consagracion-a-jesus">Fuente: Evangelización Activa</a></strong>
+                </div>
+            </article>
+
+            <!-- Versículo 6 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                    Hechos 2
+                    <span class="verse-moment">Capítulo completo</span>
+                </div>
+                <p class="verse-text">
+                    01	Al llegar el día de Pentecostés, estaban todos reunidos en el mismo lugar.	  
+02	De pronto, vino del cielo un ruido, semejante a una fuerte ráfaga de viento, que resonó en toda la casa donde se encontraban.	  
+03	Entonces vieron aparecer unas lenguas como de fuego, que descendieron por separado sobre cada uno de ellos.	  
+04	Todos quedaron llenos del Espíritu Santo, y comenzaron a hablar en distintas lenguas, según el Espíritu les permitía expresarse.	  
+05	Había en Jerusalén judíos piadosos, venidos de todas las naciones del mundo.	  
+06	Al oírse este ruido, se congregó la multitud y se llenó de asombro, porque cada uno los oía hablar en su propia lengua.	  
+07	Con gran admiración y estupor decían: «¿Acaso estos hombres que hablan no son todos galileos?	  
+08	¿Cómo es que cada uno de nosotros los oye en su propia lengua?	  
+09	Partos, medos y elamitas, los que habitamos en la Mesopotamia o en la misma Judea, en Capadocia, en el Ponto y en Asia Menor,	  
+10	en Frigia y Panfilia, en Egipto, en la Libia Cirenaica, los peregrinos de Roma,	  
+11	judíos y prosélitos, cretenses y árabes, todos los oímos proclamar en nuestras lenguas las maravillas de Dios».	  
+12	Unos a otros se decían con asombro: «¿Qué significa esto?».	  
+13	Algunos, burlándose, comentaban: «Han tomado demasiado vino».	  
+14	Entonces, Pedro poniéndose de pie con los Once, levantó la voz y dijo: «Hombres de Judea y todos los que habitan en Jerusalén, presten atención, porque voy a explicarles lo que ha sucedido.	  
+15	Estos hombres no están ebrios, como ustedes suponen, ya que no son más que las nueve de la mañana,	  
+16	sino que se está cumpliendo lo que dijo el profeta Joel:	  
+17	"En los últimos días, dice el Señor, derramaré mi Espíritu sobre todos los hombres y profetizarán sus hijos y sus hijas; los jóvenes verán visiones y los ancianos tendrán sueños proféticos.	  
+18	Más aún, derramaré mi Espíritu sobre mis servidores y servidoras, y ellos profetizarán.	  
+19	Haré prodigios arriba, en el cielo, y signos abajo, en la tierra: verán sangre, fuego y columnas de humo.	  
+20	El sol se convertirá en tinieblas y la luna en sangre, antes que llegue el Día del Señor, día grande y glorioso.	  
+21	Y todo el que invoque el nombre del Señor se salvará".	  
+22	Israelitas, escuchen: A Jesús de Nazaret, el hombre que Dios acreditó ante ustedes realizando por su intermedio los milagros, prodigios y signos que todos conocen,	  
+23	a ese hombre que había sido entregado conforme al plan y a la previsión de Dios, ustedes lo hicieron morir, clavándolo en la cruz por medio de los infieles.	  
+24	Pero Dios lo resucitó, librándolo de las angustias de la muerte, porque no era posible que ella tuviera dominio sobre él.	  
+25	En efecto, refiriéndose a él, dijo David: "Veía sin cesar al Señor delante de mí, porque él está a mi derecha para que yo no vacile.	  
+26	Por eso se alegra mi corazón y mi lengua canta llena de gozo. También mi cuerpo descansará en la esperanza,	  
+27	porque tú no entregarás mi alma al Abismo, ni dejarás que tu servidor sufra la corrupción.	  
+28	Tú me has hecho conocer los caminos de la vida y me llenarás de gozo en tu presencia".	  
+29	Hermanos, permítanme decirles con toda franqueza que el patriarca David murió y fue sepultado, y su tumba se conserva entre nosotros hasta el día de hoy.	  
+30	Pero como él era profeta, sabía que Dios le había jurado que un descendiente suyo se sentaría en su trono.	  
+31	Por eso previó y anunció la resurrección del Mesías, cuando dijo que no fue entregado al Abismo ni su cuerpo sufrió la corrupción.	  
+32	A este Jesús, Dios lo resucitó, y todos nosotros somos testigos.	  
+33	Exaltado por el poder de Dios, él recibió del Padre el Espíritu Santo prometido, y lo ha comunicado como ustedes ven y oyen.	  
+34	Porque no es David el que subió a los cielos; al contrario, él mismo afirma: "Dijo el Señor a mi Señor: Siéntate a mi derecha,	  
+35	hasta que ponga a todos tus enemigos debajo de tus pies".	  
+36	Por eso, todo el pueblo de Israel debe reconocer que a ese Jesús que ustedes crucificaron, Dios lo ha hecho Señor y Mesías».	  
+37	Al oír estas cosas, todos se conmovieron profundamente, y dijeron a Pedro y a los otros Apóstoles: «Hermanos, ¿qué debemos hacer?».	  
+38	Pedro les respondió: «Conviértanse y háganse bautizar en el nombre de Jesucristo para que les sean perdonados los pecados, y así recibirán el don del Espíritu Santo.	  
+39	Porque la promesa ha sido hecha a ustedes y a sus hijos, y a todos aquellos que están lejos: a cuantos el Señor, nuestro Dios, quiera llamar».	  
+40	Y con muchos otros argumentos les daba testimonio y los exhortaba a que se pusieran a salvo de esta generación perversa.	  
+41	Los que recibieron su palabra se hicieron bautizar; y ese día se unieron a ellos alrededor de tres mil.	  
+42	Todos se reunían asiduamente para escuchar la enseñanza de los Apóstoles y participar en la vida común, en la fracción del pan y en las oraciones.	  
+43	Un santo temor se apoderó de todos ellos, porque los Apóstoles realizaban muchos prodigios y signos.	  
+44	Todos los creyentes se mantenían unidos y ponían lo suyo en común:	  
+45	vendían sus propiedades y sus bienes, y distribuían el dinero entre ellos, según las necesidades de cada uno.	  
+46	Intimamente unidos, frecuentaban a diario el Templo, partían el pan en sus casas, y comían juntos con alegría y sencillez de corazón;	  
+47	ellos alababan a Dios y eran queridos por todo el pueblo. Y cada día, el Señor acrecentaba la comunidad con aquellos que debían salvarse.
+
+                </p>
+                <div class="verse-note">
+                    <strong></strong> 
+                </div>
+            </article>
+  
+            
+
+            
+
+
+        </main>
+
+        <footer>
+            <p>¡Deseamos que esta lectura sea de bendición para tu vida hoy!</p>
+            <p>Entra al grupo de Whatsapp y escribe sobre lo que Dios te dice hoy en su Palabra.</p>
+        </footer>
+
+    </div>
+
+    
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito', reg))
+                    .catch(err => console.warn('Error al registrar el Service Worker', err));
+            });
+        }
+         
+    </script>
+    <!-- Botón para regresar al index principal -->
+            <a href="../busqueda.html" class="btn-navigation-top">
+                <i class="fas fa-home"></i> Ir Atrás
+            </a>
+
+
+
+
+</body>
+</html>

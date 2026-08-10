@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lectura Bíblica del Día</title>
-    <!-- Fuente de Google para un aspecto limpio y moderno y FontAwesome para iconos -->
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Búsqueda de Sesiones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2c6e9e">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -21,11 +16,7 @@
             --muted-text: #7f8c8d;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Montserrat', sans-serif;
@@ -35,370 +26,281 @@
             padding: 20px;
         }
 
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-        }
+        .container { max-width: 600px; margin: 20px auto; }
 
-        /* Cabecera */
-        header {
+        /* Cabecera y Botón de Navegación Superior */
+        header { 
+            margin-bottom: 30px; 
             text-align: center;
-            margin-bottom: 30px;
         }
 
-        header h1 {
-            font-size: 2.2rem;
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        header p {
-            color: var(--accent-color);
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
-        }
-
-        /* Bloque de Resumen Vertical (Optimizado para móviles) */
-        .summary-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 35px;
-            border-top: 5px solid var(--primary-color);
-        }
-
-        .summary-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 8px;
-        }
-
-        .summary-item {
-            margin-bottom: 20px;
-        }
-
-        .summary-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .summary-label {
-            color: var(--muted-text);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-            display: flex;
+        .btn-navigation-top {
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-        }
-
-        .summary-label i {
-            color: var(--accent-color);
-            font-size: 1rem;
-        }
-
-        .badge-theme {
-            background-color: #ebf5fb;
-            color: #2980b9;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-weight: 600;
-            display: inline-block;
-            font-size: 0.95rem;
-        }
-
-        /* Contenedor flexible para las etiquetas de versículos */
-        .references-inline {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 6px;
-        }
-
-        .reference-badge {
-            background-color: #fcf3cf;
-            color: #b7950b;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: 600;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 18px;
             font-size: 0.85rem;
-            border: 1px solid #f9e79f;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px; /* Cuadrado estilizado, no ovalado */
+            transition: background-color 0.2s;
+            margin-bottom: 25px;
         }
 
-        /* Sección de Versículos */
-        .section-title {
-            font-size: 1.3rem;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            font-weight: 700;
-            position: relative;
-            padding-left: 12px;
-        }
-
-        .section-title::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 4px;
-            bottom: 4px;
-            width: 4px;
+        .btn-navigation-top:hover {
             background-color: var(--accent-color);
-            border-radius: 2px;
         }
 
-        .verses-list {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
+        header h1 { font-size: 1.8rem; color: var(--primary-color); font-weight: 700; }
+        header p { color: var(--muted-text); font-size: 0.9rem; margin-top: 5px; }
 
-        .verse-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-left: 5px solid var(--accent-color);
-            transition: transform 0.2s ease;
-        }
-
-        .verse-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .verse-reference {
+        /* Separador de Mes */
+        .month-divider {
             font-size: 1.1rem;
             font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 12px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 25px 0 15px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .month-divider::after {
+            content: '';
+            flex-grow: 1;
+            height: 2px;
+            background-color: #e0e0e0;
+        }
+
+        /* Lista de sesiones */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            text-decoration: none;
+            color: inherit;
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.2s, border-color 0.2s;
         }
 
-        .verse-moment {
-            background: #fff3cd;
-            color: #856404;
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
+        .history-item:hover {
+            transform: translateY(-2px);
+            border-left-color: var(--accent-color);
+        }
+
+        .history-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .history-date {
+            font-size: 0.8rem;
+            color: var(--muted-text);
             font-weight: 600;
+            text-transform: uppercase;
         }
 
-        .verse-text {
-            font-family: 'Merriweather', serif;
-            font-size: 1.1rem;
-            color: #34495e;
-            line-height: 1.8;
-            font-style: italic;
+        .history-topic {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
         }
 
-        .verse-note {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed #e2e8f0;
-            font-size: 0.9rem;
+        .history-icon {
             color: var(--muted-text);
+            font-size: 1.2rem;
+            padding-left: 10px;
         }
-
-        /* Pie de página */
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            font-size: 0.85rem;
-            color: var(--muted-text);
-        }
-
-
-
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Botón para regresar al index principal -->
-            <a href="./index.html" class="btn-navigation-top">
-                <i class="fas fa-home"></i> Ir Atrás
-            </a>
         <header>
-             <!--
-            <p>Después de leer los pasajes de la biblia, entra al grupo de Whatsapp y 
-            escribe sobre el mensaje que Dios te dió en su Palabra de hoy.</p>
-            -->
-
-            <h1>Lecturas de la lección</h1>
+            <!-- Botón para regresar al index principal -->
+            <a href="index.html" class="btn-navigation-top">
+                <i class="fas fa-home"></i> Ir al Inicio
+            </a>
+            <h1>Historial de Lecciones </h1>
+            <p>Explora y repasa las lecciones de fechas anteriores</p>
         </header>
-
-        <!-- Resumen de Lectura estructurado Verticalmente descendente -->
-        <section class="summary-card">
-            <h2 class="summary-title">Resumen de Lectura</h2>
-            
-            <!-- 1. Fecha -->
-            <div class="summary-item">
-                <div class="summary-label"><i class="fas fa-calendar-alt"></i> Fecha</div>
-                <span class="badge-theme" id="current-date">7 de agosto 2026</span>
-            </div>
-            
-            <!-- 2. Tema Principal -->
-            <div class="summary-item">
-                <div class="summary-label"><i class="fas fa-book-open"></i>SEGUNDO CURSO - TEMA DE HOY</div>
-                <span class="badge-theme">Lección 6 - Cristo es el Señor</span>
-            </div>
-            
-            <!-- 3. Versículos ····················· -->
-            <div class="summary-item">
-                <div class="summary-label"><i class="fas fa-bookmark"></i> Versículos</div>
-                <div class="references-inline">
-                    <span class="reference-badge">Rm 6,5</span>
-                    <span class="reference-badge">Ga 2,20</span>
-                    <span class="reference-badge">Rm 8,35-39</span>
-                    <span class="reference-badge">Flp 2,6-11</span>
-                    <span class="reference-badge">Col 2,6-7</span>
-                    <span class="reference-badge">Jn 20,28</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Detalle de la lectura  -->
-        <h2 class="section-title">Pasajes detallados</h2>
         
-        <main class="verses-list">
+
+        <main>
+            <!-- SECCIÓN SEGUNDO CURSO -->
+            <div class="month-divider">
+                <i class="far fa-calendar-alt"></i> SEGUNDO CURSO
+            </div>
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-08-07.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 7 de agosto - Segundo Curso</span>
+                        <span class="history-topic">Lección 6 Cristo es el Señor</span>
+                        <span class="history-topic">Salmo 32</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-08-05.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Miércoles 5 de agosto - Segundo Curso</span>
+                        <span class="history-topic">Lección 5 "Necesidad del arrepentimiento"</span>
+                        <span class="history-topic">Salmo 32</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
             
-            <!-- Versículo 1 -->
-            <article class="verse-card">
-                <div class="verse-reference">
-                   Carta a los Romandos 6 , 5 
-                    <span class="verse-moment">Lectura 1</span>
-                </div>
-                <p class="verse-text">
-                    05	Porque si nos hemos identificado con Cristo por una muerte semejante a la suya, también nos identificaremos con él en la resurrección.
-                </p>
-                <div class="verse-note">
-                    <strong>Reflexión:</strong> 
-                </div>
-            </article>
 
-            <!-- Versículo 2 -->
-            <article class="verse-card">
-                <div class="verse-reference">
-                     Carta a los Gálatas 2 , 20 
-                    <span class="verse-moment">Lectura 2</span>
-                </div>
-                <p class="verse-text">
-                    20	y ya no vivo yo, sino que Cristo vive en mí: la vida que sigo viviendo en la carne, la vivo en la fe en el Hijo de Dios, que me amó y se entregó por mí.
-                </p>
-                <div class="verse-note">
-                    <strong>Reflexión:</strong> 
-                </div>
-            </article>
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-08-03.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Lunes 3 de agosto - Segundo Curso</span>
+                        <span class="history-topic">Lección 4 "Efusion del Espíritu Santo"</span>
+                        <span class="history-topic">Salmo 24</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
 
-            <!-- Versículo 3 -->
-            <article class="verse-card">
-                <div class="verse-reference">
-                    Carta a los Romanos 8 , 35-39
-                    <span class="verse-moment">Lectura 3</span>
-                </div>
-                <p class="verse-text">
-                    35	¿Quién podrá entonces separarnos del amor de Cristo? ¿Las tribulaciones, las angustias, la persecución, el hambre, la desnudez, los peligros, la espada?	  
-36	Como dice la Escritura: Por tu causa somos entregados continuamente a la muerte; se nos considera como a ovejas destinadas al matadero.	  
-37	Pero en todo esto obtenemos una amplia victoria, gracias a aquel que nos amó.	  
-38	Porque tengo la certeza de que ni la muerte ni la vida, ni los ángeles ni los principados, ni lo presente ni lo futuro, ni los poderes espirituales,	  
-39	ni lo alto ni lo profundo, ni ninguna otra criatura podrá separarnos jamás del amor de Dios, manifestado en Cristo Jesús, nuestro Señor.
-                </p>
-                <div class="verse-note">
-                    <strong>Reflexión:</strong> 
-                </div>
-            </article>
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-31.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 31 de Julio - Segundo Curso</span>
+                        <span class="history-topic">Lección 3 "El Bautismo en el Espíritu Santo y el Don de Lenguas"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
 
-            <!-- Versículo 4 -->
-            <article class="verse-card">
-                <div class="verse-reference">
-                    Carta a los Filipenses 2 , 6-11
-                    <span class="verse-moment">Lectura 4</span>
-                </div>
-                <p class="verse-text">
-                    06	El, que era de condición divina, no consideró esta igualdad con Dios como algo que debía guardar celosamente:	  
-07	al contrario, se anonadó a sí mismo, tomando la condición de servidor y haciéndose semejante a los hombres. Y presentándose con aspecto humano,	  
-08	se humilló hasta aceptar por obediencia la muerte y muerte de cruz.	  
-09	Por eso, Dios lo exaltó y le dio el Nombre que está sobre todo nombre,	  
-10	para que al nombre de Jesús, se doble toda rodilla en el cielo, en la tierra y en los abismos,	  
-11	y toda lengua proclame para gloria de Dios Padre: «Jesucristo es el Señor».
-                </p>
-                <div class="verse-note">
-                    <strong>Reflexión:</strong>
-                </div>
-            </article>
 
-            <!-- Versículo 5 -->
-            <article class="verse-card">
-                <div class="verse-reference">
-                    Carta a los Colosenses 2 , 6-7
-                    <span class="verse-moment">Lectura 5</span>
-                </div>
-                <p class="verse-text">
-                    06	Vivan en Cristo Jesús, el Señor, tal como ustedes lo han recibido,	  
-07	arraigados y edificados en él, apoyándose en la fe que les fue enseñada y dando gracias constantemente.
-                </p>
-                <div class="verse-note">
-                    <strong>Reflexión:</strong>
-                </div>
-            </article>
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-27.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Lunes 27 de Julio - Segundo Curso</span>
+                        <span class="history-topic">Lección 2 "Actuación del Espíritu Santo"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
 
-            <!-- Versículo 6 -->
-            <article class="verse-card">
-                <div class="verse-reference">
-                    San Juan 20 , 28
-                    <span class="verse-moment">Lectura 6</span>
-                </div>
-                <p class="verse-text">
-                    28	Tomas respondió: «¡Señor mío y Dios mío!.
-                </p>
-                <div class="verse-note">
-                    <strong>Reflexión:</strong> 
-                </div>
-            </article>
 
-           
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-24.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 24 de Julio - Segundo Curso</span>
+                        <span class="history-topic">Lección 1 "El Espíritu Santo nuestro defensor"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
 
+            
         </main>
 
-        <footer>
-            <p>¡Deseamos que esta lectura sea de bendición para tu vida hoy!</p>
-            <p>Entra al grupo de Whatsapp y deja un mensaje con tus impresiones de lo que Dios te dice hoy.</p>
-        </footer>
+        <main>
+            <!-- SECCIÓN PRIMER CURSO -->
+            <div class="month-divider">
+                <i class="far fa-calendar-alt"></i> PRIMER CURSO
+            </div>
+            
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-20.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Lunes 20 de Julio - Primer curso</span>
+                        <span class="history-topic">Lección 13 La Parusia</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
 
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-17.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 17 de Julio - Primer curso</span>
+                        <span class="history-topic">Notas complementarias a "El Pueblo de Dios"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+            
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-15.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">miercoles 15 de Julio - Primer curso</span>
+                        <span class="history-topic">Lección 12 "El pueblo de Dios"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-13.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Lunes 13 de Julio - Primer curso</span>
+                        <span class="history-topic">Notas complementarias a la Eucaristía</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+            
+            <!-- inicio de detalles de sesion -->
+             <div class="history-list">
+                 
+                <a href="fechas/2026-07-10.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 10 de Julio - Primer curso</span>
+                        <span class="history-topic">Notas complementarias "Jesús nos amó hasta el extremo."</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+            
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                 
+                <a href="fechas/2026-07-08.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Miércoles 8 de Julio - Primer curso</span>
+                        <span class="history-topic">Lección 11 "Jesús nos amó hasta el extremo."</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+
+        </main>
     </div>
-
-    
-
-    <!-- Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registrado con éxito', reg))
-                    .catch(err => console.warn('Error al registrar el Service Worker', err));
-            });
-        }
-         
-    </script>
-    <!-- Botón para regresar al index principal -->
-            <a href="./index.html" class="btn-navigation-top">
-                <i class="fas fa-home"></i> Ir Atrás
-            </a>
-
-
-
 
 </body>
 </html>

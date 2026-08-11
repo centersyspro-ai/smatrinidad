@@ -219,6 +219,34 @@
             color: var(--muted-text);
         }
 
+/* Menú de Navegación Inferior Móvil */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+}
+.nav-link {
+    text-decoration: none;
+    color: var(--muted-text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    gap: 4px;
+}
+.nav-link i { font-size: 1.3rem; }
+.nav-link.active { color: var(--accent-color); font-weight: 700; }
+
+/* Muy importante: espacio abajo para que el menú no tape el contenido final */
+body { padding-bottom: 80px; }
 
 
     </style>
@@ -227,7 +255,7 @@
 
     <div class="container">
         <!-- Botón para regresar al index principal -->
-            <a href="../index.html" class="btn-navigation-top">
+            <a href="../temas.html" class="btn-navigation-top">
                 <i class="fas fa-home"></i> Ir Atrás
             </a>
         <header>
@@ -437,10 +465,17 @@
         }
          
     </script>
-    <!-- Botón para regresar al index principal -->
-            <a href="../index.html" class="btn-navigation-top">
-                <i class="fas fa-home"></i> Ir Atrás
-            </a>
+    <!-- Menú de navegación inferior (apunta a la raíz desde carpeta fechas) -->
+<nav class="bottom-nav">
+    <a href="../index.html" class="nav-link">
+        <i class="fas fa-book-reader"></i>
+        <span>Home</span>
+    </a>
+    <a href="../temas.html" class="nav-link">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Historial</span>
+    
+</nav>
 
 
 

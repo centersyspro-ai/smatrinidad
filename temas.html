@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Sesiones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --muted-text: #7f8c8d;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container { max-width: 600px; margin: 20px auto; }
+
+        /* Cabecera y Botón de Navegación Superior */
+        header { 
+            margin-bottom: 30px; 
+            text-align: center;
+        }
+
+        .btn-navigation-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 18px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px; /* Cuadrado estilizado, no ovalado */
+            transition: background-color 0.2s;
+            margin-bottom: 25px;
+        }
+
+        .btn-navigation-top:hover {
+            background-color: var(--accent-color);
+        }
+
+        header h1 { font-size: 1.8rem; color: var(--primary-color); font-weight: 700; }
+        header p { color: var(--muted-text); font-size: 0.9rem; margin-top: 5px; }
+
+        /* Separador de Mes */
+        .month-divider {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 25px 0 15px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .month-divider::after {
+            content: '';
+            flex-grow: 1;
+            height: 2px;
+            background-color: #e0e0e0;
+        }
+
+        /* Lista de sesiones */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: inherit;
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+            border-left-color: var(--accent-color);
+        }
+
+        .history-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .history-date {
+            font-size: 0.9rem;
+            color: #4169E1; /* Azul Rey (Royal Blue) */;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .history-topic {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .history-icon {
+            color: var(--muted-text);
+            font-size: 1.2rem;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <!-- Botón para regresar al index principal -->
+            <a href="index.html" class="btn-navigation-top">
+                <i class="fas fa-home"></i> Ir al Inicio
+            </a>
+            <h1>Historial de Lecciones </h1>
+            <p>Explora y repasa las lecciones.</p>
+        </header>
+        
+
+        <main>
+            <!-- SECCIÓN SEGUNDO CURSO -->
+            <div class="month-divider">
+                <i class="far fa-calendar-alt"></i> SEGUNDO CURSO
+            </div>
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-08-10.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Lunes 10 de agosto - Segundo Curso</span>
+                        <span class="history-topic">Lección 7 "Ven Espíritu Santo"</span>
+                        
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-08-07.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 7 de agosto - Segundo Curso</span>
+                        <span class="history-topic">Lección 6 "Cristo es el Señor"</span>
+                        <span class="history-topic">Salmo 32</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-08-05.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Miércoles 5 de agosto - Segundo Curso</span>
+                        <span class="history-topic">Lección 5 "Necesidad del arrepentimiento"</span>
+                        <span class="history-topic">Salmo 32</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+            
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-08-03.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Lunes 3 de agosto - Segundo Curso</span>
+                        <span class="history-topic">Lección 4 "Efusion del Espíritu Santo"</span>
+                        <span class="history-topic">Salmo 24</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-31.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 31 de Julio - Segundo Curso</span>
+                        <span class="history-topic">Lección 3 "El Bautismo en el Espíritu Santo y el Don de Lenguas"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-27.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Lunes 27 de Julio - Segundo Curso</span>
+                        <span class="history-topic">Lección 2 "Actuación del Espíritu Santo"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-24.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 24 de Julio - Segundo Curso</span>
+                        <span class="history-topic">Lección 1 "El Espíritu Santo nuestro defensor"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+            
+        </main>
+
+        <main>
+            <!-- SECCIÓN PRIMER CURSO -->
+            <div class="month-divider">
+                <i class="far fa-calendar-alt"></i> PRIMER CURSO
+            </div>
+            
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-20.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Lunes 20 de Julio - Primer curso</span>
+                        <span class="history-topic">Lección 13 La Parusia</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-17.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 17 de Julio - Primer curso</span>
+                        <span class="history-topic">Notas complementarias a "El Pueblo de Dios"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+            
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-15.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">miercoles 15 de Julio - Primer curso</span>
+                        <span class="history-topic">Lección 12 "El pueblo de Dios"</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                <a href="fechas/2026-07-13.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Lunes 13 de Julio - Primer curso</span>
+                        <span class="history-topic">Notas complementarias a la Eucaristía</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+            
+            <!-- inicio de detalles de sesion -->
+             <div class="history-list">
+                 
+                <a href="fechas/2026-07-10.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Viernes 10 de Julio - Primer curso</span>
+                        <span class="history-topic">Notas complementarias "Jesús nos amó hasta el extremo."</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+            
+            <!-- inicio de detalles de sesion -->
+            <div class="history-list">
+                 
+                <a href="fechas/2026-07-08.html" class="history-item">
+                    <div class="history-info">
+                        <span class="history-date">Miércoles 8 de Julio - Primer curso</span>
+                        <span class="history-topic">Lección 11 "Jesús nos amó hasta el extremo."</span>
+                    </div>
+                    <i class="fas fa-chevron-right history-icon"></i>
+                </a>
+            </div>
+
+
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura Bíblica del Día</title>
+    <!-- Fuente de Google para un aspecto limpio y moderno y FontAwesome para iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c6e9e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --muted-text: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        /* Cabecera */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Bloque de Resumen Vertical (Optimizado para móviles) */
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-label i {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .badge-theme {
+            background-color: #ebf5fb;
+            color: #2980b9;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+
+        /* Contenedor flexible para las etiquetas de versículos */
+        .references-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .reference-badge {
+            background-color: #fcf3cf;
+            color: #b7950b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #f9e79f;
+        }
+
+        /* Sección de Versículos */
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .verses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .verse-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .verse-reference {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .verse-moment {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .verse-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: #34495e;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--muted-text);
+        }
+
+/* Menú de Navegación Inferior Móvil */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+}
+.nav-link {
+    text-decoration: none;
+    color: var(--muted-text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    gap: 4px;
+}
+.nav-link i { font-size: 1.3rem; }
+.nav-link.active { color: var(--accent-color); font-weight: 700; }
+
+/* Muy importante: espacio abajo para que el menú no tape el contenido final */
+body { padding-bottom: 80px; }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Botón para regresar al index principal -->
+            <a href="../temas.html" class="btn-navigation-top">
+                <i class="fas fa-home"></i> Ir Atrás
+            </a>
+        <header>
+             <!--
+            <p>Después de leer los pasajes de la biblia, entra al grupo de Whatsapp y 
+            escribe sobre el mensaje que Dios te dió en su Palabra de hoy.</p>
+            -->
+
+            <h1>Lecturas de la lección</h1>
+        </header>
+
+        <!-- Resumen de Lectura estructurado Verticalmente descendente -->
+        <section class="summary-card">
+            <h2 class="summary-title">Resumen de Lectura</h2>
+            
+            <!-- 1. Fecha -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-calendar-alt"></i> Fecha</div>
+                <span class="badge-theme" id="current-date">28 de agosto 2026</span>
+            </div>
+            
+            <!-- 2. Tema Principal -->
+            <div class="summary-item">
+                <div class="summary-label"><i class="fas fa-book-open"></i>TERCER CURSO - TEMA DE HOY</div>
+                <span class="badge-theme">Lección 5 - Orar con los salmos.</span>
+            </div>
+            
+            <!-- 3. Versículos ····················· -->
+            
+        </section>
+
+        <!-- Detalle de la lectura  -->
+        <h2 class="section-title"></h2>
+        
+        <main class="verses-list">
+
+            <!-- Punto 0 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   El salterio
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                    En hebreo, mizmor se escribe מִזְמוֹר y significa salmo, canto o himno religioso acompañado de música de instrumentos de cuerda.<br>
+                    A la colección de los 150 salmos del Antiguo Testamento se le llama "Salterio" por una razón puramente musical y
+                     lingüística. <br>
+                    El origen de la palabra: Proviene del griego psaltérion (ψαλτήριον), que designaba al instrumento musical de cuerdas similar a
+                     la lira o el arpa. <br>
+                      La raíz de este término es el verbo psallein, que significa "pulsar o hacer vibrar las cuerdas con los dedos". <br>
+                      La conexión con los cantos: En la antigüedad, especialmente en el pueblo de Israel y bajo el reinado de David, las
+                       composiciones poéticas de alabanza y súplica a Dios se componían exclusivamente para ser cantadas y acompañadas por
+                       el sonido de este instrumento de cuerdas.<br>
+                       El salto al libro escrito: Cuando el texto bíblico hebreo se tradujo al griego (en la versión conocida como la Septuaginta),
+                        los traductores usaron el término Psalmoi (cantos ejecutados con música de cuerda) para los poemas individuales. <br>
+                        Por extensión, llamaron Salterio al volumen o libro completo que reunía todas estas canciones. <br>
+                        En resumen, el libro de los Salmos se llama Salterio porque originalmente era el "cancionero" oficial para ser interpretado con 
+                        el salterio. <br>
+                        Con los siglos, la Iglesia mantuvo este término para denominar Salmos al compendio de estas oraciones utilizadas
+                         en la liturgia diaria.
+                   
+
+                </p>
+                <div class="verse-note">
+                      
+                </div>
+            </article>
+
+            <!-- Punto 0 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   El género literario
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                   El género literario es la manera en cómo el escritor emplea el lenguaje. <br>
+                   Los salmos pertenecen al género literario de la poesía lírica y los cantos religiosos. Dentro de este gran género poético, 
+                   el Libro de los salmos se divide en varios subgéneros según su contenido y su uso en el culto:<br>
+                   Himnos: Cantos de alabanza a Dios que exaltan su grandeza y sus maravillas.<br>
+                   Súplicas o lamentos: Oraciones que expresan dolor, angustia o pedidos de ayuda en momentos difíciles.<br>
+                   Salmos de Alabanza: El hombre alaba a Dios no por un beneficio recibido sino por  reconocer su bondad y omnipotencia.<br>
+                   
+                </p>
+                <div class="verse-note">
+                      
+                </div>
+            </article>
+
+            
+            <!-- Punto 1 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   Salmo 10 , continuación del salmo 9
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                   El Salmo 10 es una continuación del salmo anterior y pone en manifiesto el tema del juicio a favor de los débiles y el castigo de la gente malvada. El salmo contiene legítimas amonestaciones de carácter social y práctico para la tarea del creyente con los más débiles y vulnerables.
+                </p>
+                <div class="verse-note">
+                      
+                </div>
+            </article>
+
+            
+            <!-- Punto 2 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   Salmo 42 y 43 son el mismo
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                   La mayoría de los estudiosos creen que los Salmos 42 y 43 forman una unidad literaria, al igual que los Salmos 1 y 2. 
+                   En primer lugar, de todos los Salmos del Libro 2 del Salterio, el Salmo 43 es el único que no tiene atribución de autor.
+                    En segundo lugar, el Salmo 43 continúa y completa la historia a través de un canto que comienza en el Salmo 42. 
+                    La repetición de frases clave de un Salmo a otro refuerza este argumento. Por ejemplo, el versículo que comienza 
+                    con la frase «¿Por qué te angustias, alma mía…?» aparece en los versículos 5 y 11 del Salmo 42, así como en el
+                     versículo 5 del Salmo 43. Y el dilema del autor respecto a sus enemigos, «¿Por qué andar de luto porque mis
+                      enemigos me oprimen?», aparece en el Salmo 42:9 y nuevamente en el Salmo 43:2.
+
+                </p>
+                <div class="verse-note">
+                </div>
+            </article>
+
+
+             <!-- Punto 3 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   Salmo 14 y 53 estan repetidos
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                  Sí, los Salmos 14 y 53 son casi idénticos, pero tienen pequeñas diferencias intencionales en sus palabras y en el uso de 
+                  los nombres de Dios.<br>
+                  ¿Por qué se repiten? El libro de los Salmos está dividido en cinco libros o secciones recopiladas a lo largo del tiempo.
+                  Los expertos creen que los compiladores incluyeron ambas versiones porque pertenecían a diferentes colecciones musicales 
+                  o adaptaciones para distintos momentos históricos del pueblo de Israel.<br>
+                  Principales diferencias.<br>
+                  El nombre de Dios:<br>
+                  El Salmo 14 usa el nombre personal de Dios: Yavé (el Señor). El Salmo 53 usa el título general: Elohim (Dios).El enfoque 
+                  principal:El Salmo 14
+                   habla más de la protección y liberación que Dios da a los justos. El Salmo 53 pone mayor atención en cómo Dios derrota
+                    y dispersa a los malvados. El contenido: El versículo 5 del Salmo 14 y el versículo 5 del Salmo 53 cambian ligeramente 
+                    al describir el temor de los malvados y cómo Dios frustra sus planes. Además, el Salmo 53 incluye una mención musical 
+                    inicial (mahalat) que no está en el Salmo 14. Esta repetición no es un error de la Biblia, sino un reflejo de cómo se 
+                    usaban estos cantos y oraciones en la adoración antigua. Otros ejemplos de salmos repetidos en la Biblia son partes del
+                     Salmo 108, que combina los Salmos 57 y 60.
+
+                </p>
+                <div class="verse-note">
+                </div>
+            </article>
+
+
+            <!-- Punto 4 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   Salmo 108 está compuesto por parte de los salmos 57 y 60
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                  Salmo 108 , Alabanza y confianza del pasado para hoy
+Este salmo se titula Un canto. Un salmo de David. En realidad, es una recopilación de secciones de otros dos salmos.
+ Salmos 108:1-5 es muy similar a Salmos 57:7-11, y Salmos 108:6-13 es casi idéntico a Salmos 60:5-12. 
+ Estas son las palabras de David, inspiradas por el Espíritu Santo, tomadas y aplicadas a un desafío actual. 
+ Los enemigos especificados en el Salmo 108:9-13 son Moab, Edom y Filistea (con énfasis en Edom).
+  Puede ser que el viejo enemigo, sometido al principio de los días de David, se levanta de nuevo e Israel deba derrotarlo nuevamente.
+El Salmo 108 nos muestra que podemos y debemos usar las palabras de las Escrituras como nuestras oraciones y alabanzas presentes,
+ adecuadas a nuestra situación actual.<br>
+“Este no es un nuevo cántico, salvo en su arreglo”.<br>
+“El Espíritu Santo no está tan corto de expresiones que necesite repetirse a sí mismo, y la repetición no puede estar destinada 
+simplemente a llenar el libro: debe haber alguna intención en la disposición de dos expresiones divinas anteriores en una nueva conexión”.
+
+                </p>
+                <div class="verse-note">
+                </div>
+            </article>
+
+            <!-- Punto 5 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   En el Nuevo Testamento Jesús oraba con los salmos
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                  Marcos 15,34<br>
+                  	y a esa hora Jesús gritó con voz potente: «Eloí, Eloí, lammá sabactani», que quiere decir: «Dios mío, Dios mío, ¿por qué me has abandonado?»
+                    <br>----------<br>
+                    Salmos 22,1<br>
+                    	Dios mío, Dios mío, ¿por qué me has abandonado? ¿Por qué estás lejos de mi clamor y mis gemidos?
+
+                </p>
+                <div class="verse-note">
+                </div>
+            </article>
+
+            <!-- Punto 6 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   Los apóstoles y María oraban con los salmos
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                  Hechos 4,24-26<br>
+                  	24	Al oírlos, todos levantaron la voz y oraron a Dios unánimemente: «Señor, tú hiciste el cielo y la tierra, el mar y todo lo que hay en ellos; Al oírlos, todos levantaron la voz y oraron a Dios unánimemente: «Señor, tú hiciste el cielo y la tierra, el mar y todo lo que hay en ellos;	  
+25	tú, por medio del Espíritu Santo, pusiste estas palabras en labios de nuestro padre David, tu servidor: "¿Por qué se amotinan las naciones y los pueblos hacen vanos proyectos?	  
+26	Los reyes de la tierra se rebelaron y los príncipes se aliaron contra el Señor y contra su Ungido".
+                    <br>--------<br>
+                    Salmos 2-1<br>
+                    	01	¿Por qué se amotinan las naciones y los pueblos hacen vanos proyectos?
+
+                </p>
+                <div class="verse-note">
+                </div>
+            </article>
+
+             <!-- Punto 7 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   Ejemplos de qué es lo que hablan cada salmo
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                  Salmo 109 Horror al mal<br>
+                  Salmo 118 Alabanza y maravillas a Dios<br>
+                  Salmo 115 Amor y poder de Dios    <br>
+                  	
+
+                </p>
+                <div class="verse-note">
+                </div>
+            </article>
+
+
+            <!-- Punto 7 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   Los salmos son cristológicos
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                 Porque tanto en el Antiguo Testamento se empezó a anunciar la venida del Mesías y en el Nuevo Testamento se habla completamente de ël.
+                </p>
+                <div class="verse-note">
+                </div>
+            </article>
+            
+            <!-- Punto 7 -->
+            <article class="verse-card">
+                <div class="verse-reference">
+                   La liturgia de las horas
+                    <span class="verse-moment"></span>
+                </div>
+                <p class="verse-text">
+                 En el antiguo testamento y nuevo testamento se oraba a distintas horas del día.<br>
+                 La liturgia de las horas tiene la finalidad de santificar todo el día.<br>
+                 La iglesia tomó todos los salmos para poder orar.<br>
+                 En la liturgia de las horas están varios comentarios de los padres de la iglesia , San Agustín, Obismo San Ambrosio, o otros más.<br>
+                 El propósito de la iglesia es promover la oración comunitaria y pública. ejemplo son estos versículos:<br>
+                 ----------<br>
+                 Hechos 2,1-15<br>
+                 01	Al llegar el día de Pentecostés, estaban todos reunidos en el mismo lugar.	  
+02	De pronto, vino del cielo un ruido, semejante a una fuerte ráfaga de viento, que resonó en toda la casa donde se encontraban.	  
+03	Entonces vieron aparecer unas lenguas como de fuego, que descendieron por separado sobre cada uno de ellos.	  
+04	Todos quedaron llenos del Espíritu Santo, y comenzaron a hablar en distintas lenguas, según el Espíritu les permitía expresarse.	  
+05	Había en Jerusalén judíos piadosos, venidos de todas las naciones del mundo.	  
+06	Al oírse este ruido, se congregó la multitud y se llenó de asombro, porque cada uno los oía hablar en su propia lengua.	  
+07	Con gran admiración y estupor decían: «¿Acaso estos hombres que hablan no son todos galileos?	  
+08	¿Cómo es que cada uno de nosotros los oye en su propia lengua?	  
+09	Partos, medos y elamitas, los que habitamos en la Mesopotamia o en la misma Judea, en Capadocia, en el Ponto y en Asia Menor,	  
+10	en Frigia y Panfilia, en Egipto, en la Libia Cirenaica, los peregrinos de Roma,	  
+11	judíos y prosélitos, cretenses y árabes, todos los oímos proclamar en nuestras lenguas las maravillas de Dios».	  
+12	Unos a otros se decían con asombro: «¿Qué significa esto?».	  
+13	Algunos, burlándose, comentaban: «Han tomado demasiado vino».	  
+14	Entonces, Pedro poniéndose de pie con los Once, levantó la voz y dijo: «Hombres de Judea y todos los que habitan en Jerusalén, presten atención, porque voy a explicarles lo que ha sucedido.	  
+15	Estos hombres no están ebrios, como ustedes suponen, ya que no son más que las nueve de la mañana<br>
+                 Hechos 10, 9<br>
+                 09	Al día siguiente, mientras estos se acercaban a la ciudad, Pedro, alrededor del mediodía, subió a la terraza para orar.<br>
+                 Hechos 3,1<br>
+                 01	En una ocasión, Pedro y Juan subían al Templo para la oración de la tarde.<br>
+                 Hechos 16,25<br>
+                 25	Cerca de la medianoche, Pablo y Silas oraban y cantaban alabanzas de Dios, mientras los otros prisioneros los escuchaban.<br>
+                 Lucas 18,1<br>
+                 01	Después le enseñó con una parábola que era necesario orar siempre sin desanimarse:<br>
+                 Hebreos 13,15 <br>
+                 Por eso debemos alabar siempre a Dios por medio de Jesucristo. Esta alabanza es el sacrificio que debemos ofrecer. ¡Alabémoslo, pues, con nuestros labios!<br>
+             <br><br>La liturgia de las horas se oran a nivel mundial. Papas, obispos, sacerdotes y laicos.<br>
+             Horarios generales y distribución del día. <br>
+             Oficio de Lectura: Meditación de la Escritura; tradicionalmente antes del alba, pero se puede rezar en cualquier momento del día.<br>
+             Laudes (Oración de la mañana): Al amanecer (aproximadamente entre las 6:00 y las 8:00 a. m.) <br>
+             Tercia: A media mañana (9:00 a. m.).<br>
+             Sexta: Al mediodía (12:00 p. m.).<br>
+             Nona: A media tarde (3:00 p. m.).<br>
+             Vísperas (Oración de la tarde): Al atardecer (aproximadamente a las 6:00 p. m.).<br>
+             Completas (Oración de la noche): Antes de acostarse a dormir.<br>
+             
+            
+                </p>
+                <div class="verse-note">
+                </div>
+            </article>
+
+
+
+
+
+
+
+             
+
+        </main>
+
+        <footer>
+            <p>¡Deseamos que esta lectura sea de bendición para tu vida hoy.</p>
+        </footer>
+
+    </div>
+
+    
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito', reg))
+                    .catch(err => console.warn('Error al registrar el Service Worker', err));
+            });
+        }
+         
+    </script>
+    <!-- Menú de navegación inferior (apunta a la raíz desde carpeta fechas) -->
+<nav class="bottom-nav">
+    <a href="../index.html" class="nav-link">
+        <i class="fas fa-book-reader"></i>
+        <span>Home</span>
+    </a>
+    <a href="../temas.html" class="nav-link">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Historial</span>
+    
+</nav>
+
+
+
+
+</body>
+</html>
